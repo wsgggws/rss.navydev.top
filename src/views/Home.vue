@@ -12,39 +12,44 @@
 
     <br />
     <div v-for="item in subscriptions" :key="item.id">
-      <a href="{{ item.url }}"> {{ item.title }} </a> <el-button type="second" @click="handleDelete(item.id)">删除</el-button>
+      <a href="{{ item.url }}"> {{ item.title }} </a>
+      <el-button type="second" @click="handleDelete(item.id)">删除</el-button>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts" name="Home">
-  import { ref, onMounted } from "vue"
-  import { getAllSubscriptions, addSubscription, deleteSubscription, type SubscriptionItem } from "../api/subscription"
+import { ref, onMounted } from "vue";
+import {
+  getAllSubscriptions,
+  addSubscription,
+  deleteSubscription,
+  type SubscriptionItem,
+} from "../api/subscription";
 
-  const subscriptions = ref<SubscriptionItem[]>([])
-  const newUrl = ref()
+const subscriptions = ref<SubscriptionItem[]>([]);
+const newUrl = ref();
 
-  onMounted(() => {
-    setTimeout(async ()=>{
-      subscriptions.value = (await getAllSubscriptions()) as SubscriptionItem[]
-    },100)
-  })
+onMounted(() => {
+  setTimeout(async () => {
+    subscriptions.value = (await getAllSubscriptions()) as SubscriptionItem[];
+  }, 100);
+});
 
-  async function handleAdd(url: string) {
-    if (! !!url) {
-      alert("请输入有效的订阅链接")
-      return
-    }
-    const newItem = await addSubscription({ url })
-    subscriptions.value.push(newItem)
-    newUrl.value = "" // 清空输入框
+async function handleAdd(url: string) {
+  if (!!!url) {
+    alert("请输入有效的订阅链接");
+    return;
   }
+  const newItem = await addSubscription({ url });
+  subscriptions.value.push(newItem);
+  newUrl.value = ""; // 清空输入框
+}
 
-  async function handleDelete(id: string) {
-    await deleteSubscription(id)
-    subscriptions.value = subscriptions.value.filter((item) => item.id !== id)
-  }
+async function handleDelete(id: string) {
+  await deleteSubscription(id);
+  subscriptions.value = subscriptions.value.filter((item) => item.id !== id);
+}
 </script>
 
 <style scoped>
@@ -54,3 +59,4 @@
   padding: 20px;
 }
 </style>
+

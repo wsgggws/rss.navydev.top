@@ -12,7 +12,7 @@
         <input type="password" id="password" v-model="form.password" required />
       </div>
       <button type="submit" :disabled="loading">
-        {{ loading ? '登录中...' : '登录' }}
+        {{ loading ? "登录中..." : "登录" }}
       </button>
       <p v-if="error" class="error">{{ error }}</p>
     </form>
@@ -20,36 +20,36 @@
 </template>
 
 <script setup lang="ts" name="Login">
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { useAuthStore } from '../stores/auth'
-  
-  const authStore = useAuthStore()
-  const router = useRouter()
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
-  const form = ref({
-    username: '',
-    password: ''
-  })
+const authStore = useAuthStore();
+const router = useRouter();
 
-  const loading = ref(false)
-  const error = ref(null)
-  const url = "http://localhost:8000/api/v1/user/token" // 替换为你的API URL
+const form = ref({
+  username: "",
+  password: "",
+});
 
-  const handleSubmit = async () => {
-    try {
-      loading.value = true
-      error.value = null
-      await authStore.login(url, form.value)
-      if (authStore.isLoggedIn) { 
-        router.push('/') 
-      }
-    } catch (err) {
-      error.value = err.response?.data?.message || '登录失败，请重试'
-    } finally {
-      loading.value = false
+const loading = ref(false);
+const error = ref(null);
+const url = "http://localhost:8000/api/v1/user/token"; // 替换为你的API URL
+
+const handleSubmit = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+    await authStore.login(url, form.value);
+    if (authStore.isLoggedIn) {
+      router.push("/");
     }
+  } catch (err) {
+    error.value = err.response?.data?.message || "登录失败，请重试";
+  } finally {
+    loading.value = false;
   }
+};
 </script>
 
 <style scoped>
@@ -94,3 +94,4 @@ button:disabled {
   margin-top: 10px;
 }
 </style>
+
