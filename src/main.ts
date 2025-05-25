@@ -9,7 +9,7 @@ import "element-plus/dist/index.css";
 
 const app = createApp(App);
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const auth = useAuthStore();
 
   // 若未恢复登录状态，则先尝试恢复
@@ -26,4 +26,3 @@ app.use(createPinia());
 app.use(ElementPlus);
 
 app.mount("#app");
-
