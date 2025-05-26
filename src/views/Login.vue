@@ -34,7 +34,7 @@ const form = ref({
 
 const loading = ref(false);
 const error = ref(null);
-const url = import.meta.env.VITE_API_BASE_URL;
+const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/user/token`;
 
 const handleSubmit = async () => {
   try {
