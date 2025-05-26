@@ -2,6 +2,12 @@
 
 Vue3 实现的 News-summary 前端项目
 
+## 线上体验地址(MVP版本，持续升级中...)
+
+- <https://news-summary-front.onrender.com/>
+- username: 码码要洗手
+- password: Mmyxs;!1
+
 ## Depends
 
 - vue3
