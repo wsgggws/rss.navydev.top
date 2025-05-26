@@ -34,7 +34,7 @@ const form = ref({
 
 const loading = ref(false);
 const error = ref(null);
-const url = "http://localhost:8000/api/v1/user/token"; // 替换为你的API URL
+const url = import.meta.env.VITE_API_BASE_URL;
 
 const handleSubmit = async () => {
   try {
