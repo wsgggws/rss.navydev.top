@@ -2,7 +2,7 @@
 
 Vue3 实现的 News-summary 前端项目
 
-## dependices
+## Depends
 
 - vue3
 - ts
@@ -10,6 +10,12 @@ Vue3 实现的 News-summary 前端项目
 - vue-router
 - element-plus
 - axios
+
+## .env
+
+```.env
+VITE_API_BASE_URL=http://localhost:8000
+```
 
 ## Run
 
