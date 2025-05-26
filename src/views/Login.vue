@@ -44,7 +44,7 @@ const handleSubmit = async () => {
     if (authStore.isLoggedIn) {
       router.push("/");
     }
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.response?.data?.message || "登录失败，请重试";
   } finally {
     loading.value = false;
@@ -94,4 +94,3 @@ button:disabled {
   margin-top: 10px;
 }
 </style>
-
