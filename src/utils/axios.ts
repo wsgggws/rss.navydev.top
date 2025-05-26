@@ -3,7 +3,7 @@ import { useAuthStore } from "../stores/auth";
 
 // 创建 Axios 实例
 const api = axios.create({
-  baseURL: "http://localhost:8000", // ✅ 替换为你的实际后端地址
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
 });
 
