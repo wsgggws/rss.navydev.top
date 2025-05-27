@@ -26,7 +26,7 @@
         >news-summary-backend</a
       >
       <br />
-      🎨 前端仓库：
+      🎨 前端仓库(有体验账号)：
       <a href="https://github.com/wsgggws/news-summary-front" target="_blank"
         >news-summary-front</a
       >
@@ -91,7 +91,7 @@ const recommendedFeeds = ref([
     id: 2,
     title: "少数派",
     description: "数字生活方式指南",
-    url: "https://sspai.com/feed	",
+    url: "https://sspai.com/feed",
     isSubscribed: false,
   },
   {
