@@ -5,6 +5,9 @@ Vue3 实现的 News-summary 前端项目
 ## 线上体验地址(MVP版本，持续升级中...)
 
 - <https://news-summary-front.onrender.com/>
+
+`注册` 或者使用如下用户名密码登录体验
+
 - username: 码码要洗手
 - password: Mmyxs;!1
 
