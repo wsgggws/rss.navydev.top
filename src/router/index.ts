@@ -3,6 +3,8 @@ import Login from "../views/Login.vue";
 import RSSList from "../views/RSSList.vue";
 import ArticleList from "../views/ArticleList.vue";
 import ArticleDetail from "../views/ArticleDetail.vue";
+import Home from "../views/Home.vue";
+import Register from "../views/Register.vue";
 
 const routes = [
   {
@@ -27,8 +29,12 @@ const routes = [
   },
   { path: "/login", component: Login },
   {
+    path: "/register",
+    component: Register,
+  },
+  {
     path: "/",
-    redirect: "/rss",
+    component: Home,
   },
 ];
 

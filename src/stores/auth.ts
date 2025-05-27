@@ -1,20 +1,17 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import { userLogin } from "../api/user";
 
 export const useAuthStore = defineStore("auth", {
   actions: {
-    async login(url: string, credentials: any) {
-      let bodyFormData = new FormData();
-      bodyFormData.append("username", credentials.username);
-      bodyFormData.append("password", credentials.password);
+    async login(credentials: any) {
       try {
         // 发送登录请求
-        let { data } = await axios.post(url, bodyFormData);
+        const data = await userLogin(credentials);
         // 存储到本地
         this.token = data.access_token;
-        this.user = data.user || null;
+        this.username = data.username;
         localStorage.setItem("token", data.access_token);
-        localStorage.setItem("user", JSON.stringify(data.user || null));
+        localStorage.setItem("username", data.username);
       } catch (error) {
         console.error("登录失败：", error);
         throw new Error("登录失败，请检查用户名和密码");
@@ -29,27 +26,26 @@ export const useAuthStore = defineStore("auth", {
       }
       const userStr = localStorage.getItem("user");
       try {
-        this.user = userStr ? JSON.parse(userStr) : null;
+        this.username = userStr ? JSON.parse(userStr) : null;
       } catch (e) {
         console.error("用户信息恢复失败：JSON 解析错误", e);
-        this.user = null;
+        this.username = "";
       }
     },
     logout() {
       // 清除本地存储
       this.token = "";
-      this.user = null;
+      this.username = "";
       localStorage.clear();
     },
   },
   state: () => {
     return {
       token: "",
-      user: null as null | { id: string; email: string },
+      username: "",
     };
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
   },
 });
-
