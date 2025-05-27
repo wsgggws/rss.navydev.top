@@ -25,4 +25,6 @@ app.use(router);
 app.use(createPinia());
 app.use(ElementPlus);
 
+useAuthStore().init();
+
 app.mount("#app");

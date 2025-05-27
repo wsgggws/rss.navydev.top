@@ -36,7 +36,12 @@ export const useAuthStore = defineStore("auth", {
       // 清除本地存储
       this.token = "";
       this.username = "";
-      localStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+    },
+    init() {
+      this.token = localStorage.getItem("token") || "";
+      this.username = localStorage.getItem("username") || "";
     },
   },
   state: () => {
