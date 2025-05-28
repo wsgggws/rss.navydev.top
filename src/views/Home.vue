@@ -108,6 +108,13 @@ const recommendedFeeds = ref([
     url: "https://v2ex.com/index.xml",
     isSubscribed: false,
   },
+  {
+    id: 5,
+    title: "36氪",
+    description: "让一部分人先看到未来",
+    url: "https://www.36kr.com/feed",
+    isSubscribed: false,
+  },
 ]);
 const handleSubscribe = async (feed: any) => {
   if (!isLoggedIn.value) {

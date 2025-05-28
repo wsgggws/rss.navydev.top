@@ -1,4 +1,3 @@
-<!-- src/views/Login.vue -->
 <template>
   <div class="login-container">
     <h2>登录(📡News Summary)</h2>
@@ -7,10 +6,26 @@
         <label for="username">用户名</label>
         <input type="text" id="username" v-model="form.username" required />
       </div>
-      <div class="form-group">
+
+      <div class="form-group password-group">
         <label for="password">密码</label>
-        <input type="password" id="password" v-model="form.password" required />
+        <div class="password-wrapper">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            v-model="form.password"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-btn"
+            @click="showPassword = !showPassword"
+          >
+            {{ showPassword ? "🙈 隐藏" : "👁️ 显示" }}
+          </button>
+        </div>
       </div>
+
       <button type="submit" :disabled="loading">
         {{ loading ? "登录中..." : "登录" }}
       </button>
@@ -34,6 +49,7 @@ const form = ref({
 
 const loading = ref(false);
 const error = ref(null);
+const showPassword = ref(false);
 
 const handleSubmit = async () => {
   try {
@@ -72,6 +88,29 @@ input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.toggle-btn {
+  margin-left: 8px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background-color: #eee;
 }
 
 button {

@@ -1,13 +1,18 @@
 <!-- ArticleDetail.vue 三级路由 -->
 <template>
   <div v-if="article">
-    <div class="meta text-sm text-gray-500 flex gap-4 mb-4">
-      <a :href="article.link" target="_blank" class="text-blue-500 underline"
-        >原文链接</a
-      >
-    </div>
-
     <Markdown :source="article.summary_md" class="custom-markdown" />
+    <!-- 原文链接：放在右下角 -->
+    <div class="original-link">
+      <a
+        :href="article.link"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn original-btn"
+      >
+        🔗 原文链接
+      </a>
+    </div>
   </div>
 
   <div v-else>
@@ -70,5 +75,25 @@ watch(
 
 .custom-markdown li::marker {
   content: none;
+}
+
+.original-link {
+  margin-top: 40px;
+  text-align: right;
+}
+
+.original-btn {
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.original-btn:hover {
+  background-color: #369d73;
 }
 </style>
