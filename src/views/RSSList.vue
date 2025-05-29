@@ -89,6 +89,7 @@ import {
   deleteSubscription,
   type SubscriptionItem,
 } from "../api/subscription";
+import { handleApiError } from "../utils/handleError";
 
 const subscriptions = ref<SubscriptionItem[]>([]);
 const totalCount = ref(0);
@@ -125,7 +126,7 @@ const fetchSubscriptions = async () => {
     subscriptions.value = data.items;
     totalCount.value = data.total;
   } catch (err: any) {
-    errorMsg.value = err?.message || "获取订阅失败";
+    handleApiError(err);
   } finally {
     loading.value = false;
   }
@@ -145,12 +146,12 @@ const handleAdd = async () => {
   try {
     await addSubscription({ url: newUrl.value.trim() });
     ElMessage.success("添加成功");
-    newUrl.value = "";
     fetchSubscriptions();
   } catch (err: any) {
-    errorMsg.value = err?.message || "添加失败";
+    handleApiError(err);
   } finally {
     adding.value = false;
+    newUrl.value = "";
   }
 };
 
@@ -160,7 +161,7 @@ const handleDelete = async (id: string) => {
     ElMessage.success("删除成功");
     fetchSubscriptions();
   } catch (err: any) {
-    errorMsg.value = err?.message || "删除失败";
+    handleApiError(err);
   }
 };
 </script>
