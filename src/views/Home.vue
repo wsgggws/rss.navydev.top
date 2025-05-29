@@ -21,16 +21,20 @@
     <p class="opensource">
       本项目为开源作品，欢迎 PR ; )
       <br />
-      🔧 后端仓库：
-      <a href="https://github.com/wsgggws/news-summary" target="_blank"
-        >news-summary-backend</a
-      >
-      <br />
-      🎨 前端仓库(有体验账号)：
-      <a href="https://github.com/wsgggws/news-summary-front" target="_blank"
-        >news-summary-front</a
-      >
-      <br />
+      🔧 后端仓库
+      <span v-if="backendStarCount !== null">⭐ {{ backendStarCount }}</span
+      >：
+      <a href="https://github.com/wsgggws/news-summary" target="_blank">
+        news-summary-backend</a
+      ><br />
+
+      🎨 前端仓库(有体验账号)
+      <span v-if="frontendStarCount !== null">⭐ {{ frontendStarCount }}</span
+      >：
+      <a href="https://github.com/wsgggws/news-summary-front" target="_blank">
+        news-summary-front</a
+      ><br />
+
       📺 B站分享：
       <a
         href="https://space.bilibili.com/472722204/lists/5018471?type=season"
@@ -63,11 +67,12 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed, ref } from "vue";
+<script setup lang="ts" name="Home">
+import { computed, ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 import { addSubscription } from "../api/subscription";
+import { handleApiError } from "../utils/handleError";
 import { ElMessage } from "element-plus";
 
 const authStore = useAuthStore();
@@ -110,9 +115,9 @@ const recommendedFeeds = ref([
   },
   {
     id: 5,
-    title: "36氪",
-    description: "让一部分人先看到未来",
-    url: "https://www.36kr.com/feed",
+    title: "Linux.com",
+    description: "News For Open Source Professionals",
+    url: "https://www.linux.com/feed/",
     isSubscribed: false,
   },
 ]);
@@ -126,15 +131,43 @@ const handleSubscribe = async (feed: any) => {
     ElMessage.success(`成功订阅：${data.title}`);
     feed.isSubscribed = true;
   } catch (err: any) {
+    handleApiError(err);
     const message: string = err.response?.data?.detail || "";
     if (message.includes("has been subscribed")) {
-      ElMessage.info("你已订阅过该源");
       feed.isSubscribed = true;
-    } else {
-      ElMessage.error(message);
     }
   }
 };
+
+const backendStarCount = ref<number | null>(null);
+const frontendStarCount = ref<number | null>(null);
+const fetchStarCount = async (
+  repo: string,
+  setter: (val: number | null) => void,
+) => {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}`);
+    if (res.ok) {
+      const data = await res.json();
+      setter(data.stargazers_count);
+    } else {
+      setter(null);
+    }
+  } catch {
+    setter(null);
+  }
+};
+
+onMounted(() => {
+  fetchStarCount(
+    "wsgggws/news-summary",
+    (count) => (backendStarCount.value = count),
+  );
+  fetchStarCount(
+    "wsgggws/news-summary-front",
+    (count) => (frontendStarCount.value = count),
+  );
+});
 </script>
 
 <style scoped>
@@ -248,5 +281,24 @@ button.disabled {
 .spacer {
   display: inline-block;
   width: 10px;
+}
+.github-star-btn {
+  background-color: transparent;
+  border: none;
+  color: #42b983;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+}
+
+.github-star-btn:hover {
+  text-decoration: underline;
+}
+
+.github-star-btn span {
+  margin-left: 6px;
+  color: #f5a623;
+  font-weight: normal;
 }
 </style>
