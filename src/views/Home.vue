@@ -14,7 +14,7 @@
     </div>
 
     <!-- 标题和介绍 -->
-    <h1>📡 News Summary 智能摘要系统</h1>
+    <h1>📡 News Summary 智能摘要系统(MVP)</h1>
     <p class="description">
       使用 AI 技术，对 RSS 新闻内容进行智能提取与个性化摘要，节省你的阅读时间。
     </p>

@@ -1,5 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <circle cx="12" cy="52" r="6" fill="#FF6600"/>
-  <path d="M10 38c14 0 26 12 26 26" stroke="#FF6600" stroke-width="6" stroke-linecap="round"/>
-  <path d="M10 24c22 0 40 18 40 40" stroke="#FF6600" stroke-width="6" stroke-linecap="round"/>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <g>
+   <circle fill="#FF6600" r="6" cy="308" cx="384"/>
+   <path stroke-linecap="round" stroke-width="6" stroke="#FF6600" d="m382,294c14,0 26,12 26,26"/>
+   <path stroke-linecap="round" stroke-width="6" stroke="#FF6600" d="m382,280c22,0 40,18 40,40"/>
+  </g>
+ </g>
 </svg>
