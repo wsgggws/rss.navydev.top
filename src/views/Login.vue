@@ -1,5 +1,8 @@
 <template>
   <div class="login-container">
+    <div class="top-right">
+      <router-link to="/" class="top-btn">🏠 返回首页</router-link>
+    </div>
     <h2>登录(📡News Summary)</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">

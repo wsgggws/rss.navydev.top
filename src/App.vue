@@ -24,4 +24,8 @@ nav {
 nav button {
   margin-left: 10px;
 }
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
 </style>

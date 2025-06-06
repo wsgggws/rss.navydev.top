@@ -32,9 +32,11 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ## MVP
 
-![News-Summary-Front-MVP-Home](./public/home.png)
+![News-Summary-Front-MVP-Home](./png/home.png)
 
-![News-Summary-Front-MVP-RSS](./public/rss.png)
+![News-Summary-Front-MVP-RSS](./png/rss.png)
+
+![News-Summary-Front-移动端](./png/app-show.png)
 
 ## backend
 

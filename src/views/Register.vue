@@ -1,5 +1,9 @@
 <template>
   <div class="register-container">
+    <div class="top-right">
+      <router-link to="/" class="top-btn">🏠 返回首页</router-link>
+    </div>
+
     <h2>注册(📡News Summary)</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
