@@ -103,7 +103,7 @@ const recommendedFeeds = ref([
     id: 3,
     title: "阮一峰的网络日志",
     description: "商业与科技新知",
-    url: "http://feeds.feedburner.com/ruanyifeng",
+    url: "http://www.ruanyifeng.com/blog/atom.xml",
     isSubscribed: false,
   },
   {
