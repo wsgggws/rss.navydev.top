@@ -21,7 +21,7 @@ export interface ArticleItem {
   id: string;
   link: string;
   published_at: string;
-  summary_md: string;
+  summary_md?: string;
   title: string;
 }
 

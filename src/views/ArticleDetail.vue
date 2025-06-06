@@ -1,8 +1,6 @@
-<!-- ArticleDetail.vue 三级路由 -->
 <template>
   <div v-if="article">
     <Markdown :source="article.summary_md" class="custom-markdown" />
-    <!-- 原文链接：放在右下角 -->
     <div class="original-link">
       <a
         :href="article.link"
@@ -95,5 +93,18 @@ watch(
 
 .original-btn:hover {
   background-color: #369d73;
+}
+
+@media (max-width: 768px) {
+  .original-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .original-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
 }
 </style>

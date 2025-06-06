@@ -1,7 +1,6 @@
-<!-- ArticleList.vue 二级路由 -->
 <template>
-  <el-row :gutter="8" type="flex" class="h-screen">
-    <el-col :span="8" class="bg-red-100 p-4">
+  <el-row :gutter="8" type="flex" class="article-layout">
+    <el-col :xs="24" :md="10" class="article-list">
       <h2>文章列表</h2>
       <ol class="pl-0">
         <li
@@ -28,10 +27,6 @@
         </li>
       </ol>
 
-      <hr />
-      <hr />
-
-      <!-- 分页控件 -->
       <el-pagination
         v-model:current-page="currentPage"
         :page-size="pageSize"
@@ -40,9 +35,8 @@
         @current-change="handlePageChange"
       />
     </el-col>
-    <el-col :span="1" class="bg-green-100 p-4"></el-col>
-    <!-- 三级路由出口 -->
-    <el-col :span="15" class="bg-green-100 p-4">
+
+    <el-col :xs="24" :md="14" class="article-detail">
       <router-view />
     </el-col>
   </el-row>
@@ -87,6 +81,15 @@ async function handlePageChange(page: number) {
 </script>
 
 <style scoped>
+.article-layout {
+  flex-wrap: wrap;
+}
+
+.article-list,
+.article-detail {
+  margin-bottom: 20px;
+}
+
 li {
   text-align: left;
 }

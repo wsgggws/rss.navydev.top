@@ -5,10 +5,8 @@
       <router-link to="/" class="top-btn">🏠 返回首页</router-link>
     </div>
 
-    <el-row :gutter="10" type="flex" class="main-row">
-      <el-col :span="1"> </el-col>
-
-      <el-col :span="4" class="left-panel">
+    <el-row :gutter="10" type="flex" class="main-row responsive-layout">
+      <el-col :xs="24" :md="4" class="left-panel">
         <h1 class="title">📡 我的订阅</h1>
 
         <!-- 添加订阅 -->
@@ -70,10 +68,9 @@
         />
       </el-col>
 
-      <el-col :span="18" class="right-panel">
+      <el-col :xs="24" :md="20" class="right-panel">
         <router-view />
       </el-col>
-      <el-col :span="1"> </el-col>
     </el-row>
   </div>
 </template>
@@ -167,7 +164,6 @@ const handleDelete = async (id: string) => {
 </script>
 
 <style scoped>
-/* 主容器 */
 .rss-container {
   position: relative;
   min-height: 100vh;
@@ -175,7 +171,6 @@ const handleDelete = async (id: string) => {
   padding-top: 20px;
 }
 
-/* 顶部右上角按钮 */
 .top-right {
   position: absolute;
   top: 20px;
@@ -196,27 +191,19 @@ const handleDelete = async (id: string) => {
   background-color: #369d73;
 }
 
-/* 标题 */
 .title {
   font-size: 1.5em;
   font-weight: bold;
 }
 
-/* 左侧订阅列表区域 */
-.left-panel {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-/* 右侧内容展示区 */
+.left-panel,
 .right-panel {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-/* 订阅条目样式 */
 .rss-item {
   display: flex;
   justify-content: space-between;
@@ -241,5 +228,11 @@ const handleDelete = async (id: string) => {
 
 .delete-btn {
   margin-right: 16px;
+}
+
+@media (max-width: 768px) {
+  .top-right {
+    right: 10px;
+  }
 }
 </style>
