@@ -16,10 +16,10 @@
     <!-- 标题和介绍 -->
     <h1>📡 News Summary 智能摘要系统(MVP)</h1>
     <p class="description">
-      使用 AI 技术，对 RSS 新闻内容进行智能提取与个性化摘要，节省你的阅读时间。
+      使用 AI 技术，对 RSS 新闻内容进行智能提取与个性化摘要，节省阅读时间。
     </p>
     <p class="opensource">
-      本项目为开源作品，欢迎 PR ; )
+      本项目为开源作品，欢迎 PR ; ) && 点亮⭐⭐
       <br />
       🔧 后端仓库
       <span v-if="backendStarCount !== null">⭐ {{ backendStarCount }}</span
