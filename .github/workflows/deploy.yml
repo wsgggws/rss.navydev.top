@@ -32,4 +32,4 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
-          target: "$HOME/opt/rss/front/deploy/"
+          target: "$HOME/deploy/front/"

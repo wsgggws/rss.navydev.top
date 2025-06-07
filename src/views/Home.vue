@@ -120,6 +120,13 @@ const recommendedFeeds = ref([
     url: "https://www.linux.com/feed/",
     isSubscribed: false,
   },
+  {
+    id: 6,
+    title: "Brendan Gregg's Blog",
+    description: "Brendan Gregg's Blog",
+    url: "https://www.brendangregg.com/blog/rss.xml",
+    isSubscribed: false,
+  },
 ]);
 const handleSubscribe = async (feed: any) => {
   if (!isLoggedIn.value) {
