@@ -2,12 +2,12 @@
   <el-row :gutter="8" type="flex" class="article-layout">
     <el-col :xs="24" :md="10" class="article-list">
       <h2>文章列表</h2>
-      <ol class="pl-0">
+      <ul class="pl-0">
         <li
           v-for="(article, index) in articles"
           :key="article.id"
           :class="[
-            'flex items-start gap-1 marker:hidden',
+            'flex items-start gap-1',
             article.id.toString() === $route.params.articleId
               ? 'bg-yellow-300'
               : '',
@@ -25,7 +25,7 @@
             }})</router-link
           >
         </li>
-      </ol>
+      </ul>
 
       <el-pagination
         v-model:current-page="currentPage"
@@ -90,11 +90,8 @@ async function handlePageChange(page: number) {
   margin-bottom: 20px;
 }
 
+ul,
 li {
   text-align: left;
-}
-
-li::marker {
-  content: none;
 }
 </style>

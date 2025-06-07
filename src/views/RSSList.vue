@@ -7,13 +7,13 @@
 
     <el-row :gutter="10" type="flex" class="main-row responsive-layout">
       <el-col :xs="24" :md="4" class="left-panel">
-        <h1 class="title">📡 我的订阅</h1>
+        <h1 class="title">📡 我的RSS订阅</h1>
 
         <!-- 添加订阅 -->
         <div class="flex gap-2 mt-4">
           <el-input
             v-model="newUrl"
-            placeholder="输入订阅链接"
+            placeholder="👉 输入RSS链接，👆 添加订阅..."
             class="flex-1 border rounded px-3 py-2"
           />
           <el-button type="primary" :loading="adding" @click="handleAdd"
