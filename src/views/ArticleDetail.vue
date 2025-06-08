@@ -1,7 +1,12 @@
 <template>
   <div v-if="article">
     <Markdown :source="article.summary_md" class="custom-markdown" />
-    <div class="original-link">
+    <div class="original-link flex justify-between items-center mt-4">
+      <!-- 返回顶部按钮 -->
+      <button class="btn back-to-top-btn" @click="scrollToTop">
+        ⬆️ 返回顶部
+      </button>
+
       <a
         :href="article.link"
         target="_blank"
@@ -57,6 +62,12 @@ watch(
   },
   { immediate: true },
 );
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
 </script>
 
 <style scoped>
@@ -105,6 +116,37 @@ watch(
     width: 100%;
     padding: 12px;
     font-size: 16px;
+  }
+}
+.btn {
+  padding: 6px 12px;
+  background-color: #409eff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #66b1ff;
+}
+
+.original-link {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+
+  .original-link {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
   }
 }
 </style>
