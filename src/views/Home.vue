@@ -25,7 +25,7 @@
       <span v-if="backendStarCount !== null">⭐ {{ backendStarCount }}</span
       >：
       <a href="https://github.com/wsgggws/news-summary" target="_blank">
-        news-summary-backend</a
+        news-summary</a
       ><br />
 
       🎨 前端仓库(有体验账号)

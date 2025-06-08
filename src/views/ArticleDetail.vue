@@ -1,20 +1,21 @@
 <template>
   <div v-if="article">
     <Markdown :source="article.summary_md" class="custom-markdown" />
-    <div class="original-link flex justify-between items-center mt-4">
-      <!-- 返回顶部按钮 -->
-      <button class="btn back-to-top-btn" @click="scrollToTop">
-        ⬆️ 返回顶部
-      </button>
-
+    <div class="original-link">
+      <!-- 原文链接靠左 -->
       <a
         :href="article.link"
         target="_blank"
         rel="noopener noreferrer"
         class="btn original-btn"
       >
-        🔗 原文链接
+        👉查看原文
       </a>
+
+      <!-- 返回顶部按钮靠右 -->
+      <button class="btn back-to-top-btn" @click="scrollToTop">
+        ⬆️返回顶部
+      </button>
     </div>
   </div>
 
@@ -86,38 +87,6 @@ function scrollToTop() {
   content: none;
 }
 
-.original-link {
-  margin-top: 40px;
-  text-align: right;
-}
-
-.original-btn {
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  text-decoration: none;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
-}
-
-.original-btn:hover {
-  background-color: #369d73;
-}
-
-@media (max-width: 768px) {
-  .original-link {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .original-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-  }
-}
 .btn {
   padding: 6px 12px;
   background-color: #409eff;
@@ -126,17 +95,25 @@ function scrollToTop() {
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .btn:hover {
   background-color: #66b1ff;
 }
+.original-link a {
+  text-decoration: none; /* 去掉下划线 */
+}
 
+/* 两个按钮左右对齐，中间空开 */
 .original-link {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
 }
 
+/* 移动端也保留左右布局，不变方向 */
 @media (max-width: 768px) {
   .btn {
     font-size: 13px;
@@ -144,9 +121,7 @@ function scrollToTop() {
   }
 
   .original-link {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
+    padding: 0 10px;
   }
 }
 </style>
