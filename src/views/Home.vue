@@ -19,16 +19,16 @@
       使用 AI 技术，对 RSS 新闻内容进行智能提取与个性化摘要，节省阅读时间。
     </p>
     <p class="opensource">
-      本项目为开源作品，欢迎 PR ; ) && 点亮⭐⭐
+      开源作品，欢迎 PR ; ) && 点亮⭐⭐
       <br />
-      🔧 后端仓库
+      🔧 后端
       <span v-if="backendStarCount !== null">⭐ {{ backendStarCount }}</span
       >：
       <a href="https://github.com/wsgggws/news-summary" target="_blank">
         news-summary</a
       ><br />
 
-      🎨 前端仓库(有体验账号)
+      🎨 前端(有账号)
       <span v-if="frontendStarCount !== null">⭐ {{ frontendStarCount }}</span
       >：
       <a href="https://github.com/wsgggws/news-summary-front" target="_blank">
