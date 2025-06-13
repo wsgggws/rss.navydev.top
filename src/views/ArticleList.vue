@@ -20,6 +20,7 @@
           <router-link
             :to="`/rss/${$route.params.rssId}/articles/${article.id}`"
             class="text-blue-500 visited:text-purple-600"
+            style="text-decoration: none"
             >{{ article.title }} ({{
               article.published_at.slice(0, 10)
             }})</router-link
