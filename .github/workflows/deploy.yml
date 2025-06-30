@@ -31,8 +31,8 @@ jobs:
           host: ${{ secrets.REMOTE_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/*"
-          target: "$HOME/deploy/front/"
+          source: "config/*,dist/*"
+          target: "$HOME/deploy/rss.navydev.top/"
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
@@ -42,6 +42,7 @@ jobs:
       - name: 🚀 Deploy on server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }} <<EOF
-            cd ${{ secrets.REMOTE_BACKEND_DIR }}
-            docker compose restart nginx
+            cp deploy/rss.navydev.top/config/nginx/conf.d/*.conf deploy/navydev.top/config/nginx/conf.d/
+            cd deploy/navydev.top
+            sh scripts/restart.sh
           EOF
