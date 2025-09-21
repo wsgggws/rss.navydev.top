@@ -24,15 +24,15 @@
       🔧 后端
       <span v-if="backendStarCount !== null">⭐ {{ backendStarCount }}</span
       >：
-      <a href="https://github.com/wsgggws/news-summary" target="_blank">
-        news-summary</a
+      <a href="https://github.com/wsgggws/api.rss.navydev.top" target="_blank">
+        api.rss.navydev.top</a
       ><br />
 
       🎨 前端(有账号)
       <span v-if="frontendStarCount !== null">⭐ {{ frontendStarCount }}</span
       >：
-      <a href="https://github.com/wsgggws/news-summary-front" target="_blank">
-        news-summary-front</a
+      <a href="https://github.com/wsgggws/rss.navydev.top" target="_blank">
+        rss.navydev.top</a
       ><br />
 
       📺 B站分享：
