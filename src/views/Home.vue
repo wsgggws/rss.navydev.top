@@ -40,9 +40,11 @@
         href="https://space.bilibili.com/472722204/lists/5018471?type=season"
         target="_blank"
         >合集·(FastAPI)News-Summary</a
-      >
+      ><br />
+
+      🔭 监控面板：
       <a href="https://rss.navydev.top/__radar/" target="_blank"
-        >FastAPI-radar·后端请求监控面板</a
+        >FastAPI-radar·后端请求，SQL查询，异常...</a
       >
     </p>
 
