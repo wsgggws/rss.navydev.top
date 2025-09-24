@@ -41,6 +41,9 @@
         target="_blank"
         >合集·(FastAPI)News-Summary</a
       >
+      <a href="https://rss.navydev.top/__radar/" target="_blank"
+        >FastAPI-radar·后端请求监控面板</a
+      >
     </p>
 
     <!-- 推荐 RSS -->
