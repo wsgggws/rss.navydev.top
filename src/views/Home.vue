@@ -50,7 +50,14 @@
 
     <!-- 推荐 RSS -->
     <h2 class="section-title">🔥 热门订阅推荐</h2>
-    <ul class="rss-list">
+    
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-state">
+      <el-icon class="is-loading"><Loading /></el-icon> 加载中...
+    </div>
+    
+    <!-- 推荐列表 -->
+    <ul v-else class="rss-list">
       <li v-for="feed in recommendedFeeds" :key="feed.id">
         <button
           class="btn"
@@ -61,9 +68,20 @@
           订阅
         </button>
         <span class="spacer"></span>
-        <strong>{{ feed.title }}</strong> - {{ feed.description }}
+        <strong>{{ feed.title }}</strong> {{ feed.description }}
       </li>
     </ul>
+
+    <!-- 分页 -->
+    <el-pagination
+      v-if="!loading && totalCount > pageSize"
+      v-model:current-page="currentPage"
+      :page-size="pageSize"
+      :total="totalCount"
+      layout="prev, pager, next, total"
+      @current-change="handlePageChange"
+      class="pagination"
+    />
 
     <!-- 我的订阅按钮 -->
     <div class="auth-links">
@@ -76,9 +94,10 @@
 import { computed, ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuthStore } from "../stores/auth";
-import { addSubscription } from "../api/subscription";
+import { addSubscription, getRecommendedFeeds, type RecommendedFeed } from "../api/subscription";
 import { handleApiError } from "../utils/handleError";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElIcon } from "element-plus";
+import { Loading } from "@element-plus/icons-vue";
 
 const authStore = useAuthStore();
 
@@ -88,51 +107,63 @@ const handleLogout = () => {
   authStore.logout();
 };
 
-// 推荐订阅，可从 API 获取替换
-const recommendedFeeds = ref([
-  {
-    id: 1,
-    title: "美团技术团队",
-    description: "技术知识分享",
-    url: "https://tech.meituan.com/feed",
-    isSubscribed: false,
-  },
-  {
-    id: 2,
-    title: "少数派",
-    description: "数字生活方式指南",
-    url: "https://sspai.com/feed",
-    isSubscribed: false,
-  },
-  {
-    id: 3,
-    title: "阮一峰的网络日志",
-    description: "商业与科技新知",
-    url: "http://www.ruanyifeng.com/blog/atom.xml",
-    isSubscribed: false,
-  },
-  {
-    id: 4,
-    title: "V2EX",
-    description: "程序员讨论社区",
-    url: "https://v2ex.com/index.xml",
-    isSubscribed: false,
-  },
-  {
-    id: 5,
-    title: "Linux.com",
-    description: "News For Open Source Professionals",
-    url: "https://www.linux.com/feed/",
-    isSubscribed: false,
-  },
-  {
-    id: 6,
-    title: "Brendan Gregg's Blog",
-    description: "Brendan Gregg's Blog",
-    url: "https://www.brendangregg.com/blog/rss.xml",
-    isSubscribed: false,
-  },
-]);
+// 推荐订阅，从 API 获取
+const recommendedFeeds = ref<RecommendedFeed[]>([]);
+const currentPage = ref(1);
+const pageSize = ref(10);
+const totalCount = ref(0);
+const loading = ref(false);
+
+// 获取推荐订阅列表
+const fetchRecommendedFeeds = async () => {
+  loading.value = true;
+  try {
+    const data = await getRecommendedFeeds({
+      page: currentPage.value,
+      pageSize: pageSize.value,
+    });
+    recommendedFeeds.value = data.items.map(item => ({
+      ...item,
+      isSubscribed: false,
+    }));
+    totalCount.value = data.total;
+  } catch (err: any) {
+    handleApiError(err);
+    // 如果API失败，使用默认数据
+    recommendedFeeds.value = [
+      {
+        id: 1,
+        title: "美团技术团队",
+        description: "技术知识分享",
+        url: "https://tech.meituan.com/feed",
+        isSubscribed: false,
+      },
+      {
+        id: 2,
+        title: "少数派",
+        description: "数字生活方式指南",
+        url: "https://sspai.com/feed",
+        isSubscribed: false,
+      },
+      {
+        id: 3,
+        title: "阮一峰的网络日志",
+        description: "商业与科技新知",
+        url: "http://www.ruanyifeng.com/blog/atom.xml",
+        isSubscribed: false,
+      },
+    ];
+    totalCount.value = recommendedFeeds.value.length;
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 处理分页变化
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+  fetchRecommendedFeeds();
+};
 const handleSubscribe = async (feed: any) => {
   if (!isLoggedIn.value) {
     ElMessage.warning("请先登录后再订阅");
@@ -171,6 +202,7 @@ const fetchStarCount = async (
 };
 
 onMounted(() => {
+  fetchRecommendedFeeds();
   fetchStarCount(
     "wsgggws/news-summary",
     (count) => (backendStarCount.value = count),
@@ -294,6 +326,20 @@ button.disabled {
   display: inline-block;
   width: 10px;
 }
+
+.loading-state {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.pagination {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
 .github-star-btn {
   background-color: transparent;
   border: none;
