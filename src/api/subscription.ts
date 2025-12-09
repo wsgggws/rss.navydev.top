@@ -30,6 +30,37 @@ export interface ArticleListResponse {
   total: number;
 }
 
+export interface RecommendedFeed {
+  id: number;
+  title: string;
+  description: string;
+  url: string;
+  isSubscribed?: boolean;
+}
+
+export interface RecommendedFeedListResponse {
+  items: RecommendedFeed[];
+  total: number;
+}
+
+// 获取推荐订阅列表
+export async function getRecommendedFeeds(params?: {
+  page?: number;
+  pageSize?: number;
+}): Promise<RecommendedFeedListResponse> {
+  const { page = 1, pageSize = 10 } = params || {};
+  const offset = (page - 1) * pageSize;
+
+  const res = await api.get("/api/v1/rss/recommended", {
+    params: {
+      limit: pageSize,
+      offset: offset,
+    },
+  });
+
+  return res.data;
+}
+
 // 获取所有订阅
 export async function getAllSubscriptions(params?: {
   page?: number;
