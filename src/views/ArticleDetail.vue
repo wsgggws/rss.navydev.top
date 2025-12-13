@@ -25,10 +25,9 @@
 </template>
 
 <script setup lang="ts" name="ArticleDetail">
-const Markdown = () => import("vue3-markdown-it");
-
 import { ref, watch } from "vue";
 import { fetchArticleDetail, type ArticleItem } from "../api/subscription";
+import Markdown from "vue3-markdown-it";
 
 const article = ref<ArticleItem | null>(null); // 初始化为 null
 
