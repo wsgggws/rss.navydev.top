@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login.vue";
-import RSSList from "../views/RSSList.vue";
-import ArticleList from "../views/ArticleList.vue";
-import ArticleDetail from "../views/ArticleDetail.vue";
-import Home from "../views/Home.vue";
-import Register from "../views/Register.vue";
+
+const Home = () => import("../views/Home.vue");
+const Login = () => import("../views/Login.vue");
+const Register = () => import("../views/Register.vue");
+const RSSList = () => import("../views/RSSList.vue");
+const ArticleList = () => import("../views/ArticleList.vue");
+const ArticleDetail = () => import("../views/ArticleDetail.vue");
 
 const routes = [
   {

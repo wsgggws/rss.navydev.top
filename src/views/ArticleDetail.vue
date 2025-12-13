@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts" name="ArticleDetail">
-import Markdown from "vue3-markdown-it";
+const Markdown = () => import("vue3-markdown-it");
 
 import { ref, watch } from "vue";
 import { fetchArticleDetail, type ArticleItem } from "../api/subscription";
