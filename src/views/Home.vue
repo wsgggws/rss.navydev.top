@@ -14,7 +14,7 @@
     </div>
 
     <!-- 标题和介绍 -->
-    <h1>📡 News Summary 智能摘要系统(MVP)</h1>
+    <h1>📡 RSS 智能摘要系统(MVP)</h1>
     <p class="description">
       使用 AI 技术，对 RSS 新闻内容进行智能提取与个性化摘要，节省阅读时间。
     </p>
@@ -204,11 +204,11 @@ const fetchStarCount = async (
 onMounted(() => {
   fetchRecommendedFeeds();
   fetchStarCount(
-    "wsgggws/news-summary",
+    "wsgggws/api.rss.navydev.top",
     (count) => (backendStarCount.value = count),
   );
   fetchStarCount(
-    "wsgggws/news-summary-front",
+    "wsgggws/rss.navydev.top",
     (count) => (frontendStarCount.value = count),
   );
 });
