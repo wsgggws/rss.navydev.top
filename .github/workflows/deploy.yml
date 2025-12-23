@@ -1,6 +1,5 @@
 name: Deploy
 
-# on: [push, pull_request]
 on:
   push:
     tags:
@@ -25,24 +24,30 @@ jobs:
       - name: Build project
         run: VITE_API_BASE_URL=/backend npm run build
 
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.REMOTE_IP }} >> ~/.ssh/known_hosts
+
       - name: Copy files to server via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.REMOTE_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "config/*,dist/*"
+          source: "config/nginx/conf.d/*,dist/*"
           target: "$HOME/deploy/rss.navydev.top/"
-
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          strip_components: 0
+          overwrite: true
 
       - name: 🚀 Deploy on server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }} <<EOF
-            cp deploy/rss.navydev.top/config/nginx/conf.d/*.conf deploy/navydev.top/config/nginx/conf.d/
-            cd deploy/navydev.top
-            sh scripts/restart.sh
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }} <<'EOF'
+            sudo cp -r $HOME/deploy/rss.navydev.top/dist/* /usr/share/nginx/html/rss.navydev.top/
+            sudo cp $HOME/deploy/rss.navydev.top/config/nginx/conf.d/*.conf /etc/nginx/conf.d/
+            sudo nginx -t && sudo systemctl reload nginx
           EOF
