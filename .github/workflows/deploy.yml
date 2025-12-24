@@ -39,7 +39,7 @@ jobs:
           host: ${{ secrets.REMOTE_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "config/nginx/conf.d/*,dist/*"
+          source: "config/nginx/conf.d/*,dist/*,assets"
           target: "$HOME/deploy/rss.navydev.top/"
           strip_components: 0
           overwrite: true
