@@ -1,21 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-const Home = () => import("../views/Home.vue");
-const Login = () => import("../views/Login.vue");
-const Register = () => import("../views/Register.vue");
 const RSSList = () => import("../views/RSSList.vue");
 const ArticleList = () => import("../views/ArticleList.vue");
 const ArticleDetail = () => import("../views/ArticleDetail.vue");
 
 const routes = [
   {
-    path: "/rss",
+    path: "/",
     component: RSSList,
     children: [
       {
         path: ":rssId/articles",
         component: ArticleList,
-        props: true, // 启用 props 接收参数
+        props: true,
         children: [
           {
             path: ":articleId",
@@ -26,16 +23,6 @@ const routes = [
         ],
       },
     ],
-    meta: { requiresAuth: true },
-  },
-  { path: "/login", component: Login },
-  {
-    path: "/register",
-    component: Register,
-  },
-  {
-    path: "/",
-    component: Home,
   },
 ];
 

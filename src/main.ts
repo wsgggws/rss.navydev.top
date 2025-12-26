@@ -1,28 +1,14 @@
-// src/main.js
+// src/main.ts
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
-import { useAuthStore } from "./stores/auth";
 import "element-plus/dist/index.css";
 
 const app = createApp(App);
+const pinia = createPinia();
 
-router.beforeEach((to, _, next) => {
-  const auth = useAuthStore();
-
-  // 若未恢复登录状态，则先尝试恢复
-  if (!auth.token) auth.restoreFromLocal();
-  if (to.meta.requiresAuth && !auth.isLoggedIn) {
-    next("/login");
-  } else {
-    next();
-  }
-});
-
+app.use(pinia);
 app.use(router);
-app.use(createPinia());
-
-useAuthStore().init();
 
 app.mount("#app");

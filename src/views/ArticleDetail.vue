@@ -74,6 +74,8 @@ function scrollToTop() {
 .custom-markdown {
   text-align: left;
   max-width: 100%;
+  line-height: 1.8;
+  color: #2d3748;
 }
 
 .custom-markdown ul,
@@ -86,41 +88,80 @@ function scrollToTop() {
   content: none;
 }
 
+.custom-markdown h1,
+.custom-markdown h2,
+.custom-markdown h3 {
+  color: #1a202c;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.custom-markdown p {
+  margin-bottom: 1em;
+}
+
+.custom-markdown code {
+  background: #f7fafc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 .btn {
-  padding: 6px 12px;
-  background-color: #409eff;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .btn:hover {
-  background-color: #66b1ff;
-}
-.original-link a {
-  text-decoration: none; /* 去掉下划线 */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
-/* 两个按钮左右对齐，中间空开 */
+.btn:active {
+  transform: translateY(0);
+}
+
+.back-to-top-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+}
+
+.back-to-top-btn:hover {
+  box-shadow: 0 6px 16px rgba(245, 87, 108, 0.4);
+}
+
+.original-link a {
+  text-decoration: none;
+}
+
 .original-link {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e2e8f0;
+  gap: 12px;
 }
 
-/* 移动端也保留左右布局，不变方向 */
 @media (max-width: 768px) {
   .btn {
     font-size: 13px;
-    padding: 5px 10px;
+    padding: 8px 16px;
   }
 
   .original-link {
-    padding: 0 10px;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
   }
 }
 </style>
