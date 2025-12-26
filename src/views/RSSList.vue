@@ -81,7 +81,7 @@ import { handleApiError } from "../utils/handleError";
 const subscriptions = ref<SubscriptionItem[]>([]);
 const totalCount = ref(0);
 const currentPage = ref(1);
-const pageSize = 12;
+const pageSize = 6;
 
 const loading = ref(false);
 const errorMsg = ref("");

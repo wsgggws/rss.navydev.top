@@ -45,7 +45,7 @@ import { fetchArticles, type ArticleItem } from "../api/subscription";
 const articles = ref<ArticleItem[]>([]);
 const totalCount = ref(0);
 const currentPage = ref(1);
-const pageSize = ref(12);
+const pageSize = ref(6);
 
 // 通过 props 接收 rssId
 const props = defineProps({
