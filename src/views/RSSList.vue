@@ -1,7 +1,7 @@
 <template>
   <div class="rss-container">
     <el-row :gutter="10" type="flex" class="main-row">
-      <!-- 左侧面板：RSS列表 + 文章列表（PC端） -->
+      <!-- 左侧面板：RSS订阅列表 + 文章列表 -->
       <el-col :xs="24" :md="8" class="left-panel">
         <!-- RSS 订阅列表 -->
         <div class="rss-section">
@@ -53,9 +53,12 @@
             class="pagination"
           />
         </div>
+
+        <!-- 文章列表区域 -->
+        <router-view name="articleList" />
       </el-col>
 
-      <!-- 右侧面板：嵌套路由内容（文章列表 + 详情） -->
+      <!-- 右侧面板：文章详情（独占） -->
       <el-col :xs="24" :md="16" class="right-panel">
         <router-view />
       </el-col>
@@ -157,6 +160,28 @@ const handleDelete = async (id: string) => {
   margin-bottom: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  position: sticky;
+  top: 20px;
+}
+
+.left-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.left-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.left-panel::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+}
+
+.left-panel::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .right-panel {
@@ -165,7 +190,7 @@ const handleDelete = async (id: string) => {
   padding: 24px;
   border-radius: 16px;
   margin-bottom: 20px;
-  min-height: 500px;
+  min-height: calc(100vh - 40px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -236,14 +261,19 @@ const handleDelete = async (id: string) => {
 
 /* 移动端优化 */
 @media (max-width: 768px) {
-  .left-panel,
+  .left-panel {
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    max-height: none;
+    position: relative;
+    top: 0;
+  }
+  
   .right-panel {
     padding: 16px;
     margin-bottom: 10px;
     border-radius: 12px;
-  }
-  
-  .right-panel {
     min-height: auto;
   }
   

@@ -1,47 +1,39 @@
 <template>
-  <div class="article-list-wrapper">
-    <!-- 文章列表部分 -->
-    <div class="article-list-section">
-      <h2>文章列表</h2>
-      <ul class="article-ul">
-        <li
-          v-for="(article, index) in articles"
-          :key="article.id"
-          :class="[
-            'article-item',
-            article.id.toString() === $route.params.articleId
-              ? 'active'
-              : '',
-          ]"
+  <div class="article-list-container">
+    <h2 class="article-list-title">📰 文章列表</h2>
+    <ul class="article-ul">
+      <li
+        v-for="(article, index) in articles"
+        :key="article.id"
+        :class="[
+          'article-item',
+          article.id.toString() === $route.params.articleId
+            ? 'active'
+            : '',
+        ]"
+      >
+        <span class="article-index"
+          >{{ (currentPage - 1) * pageSize + index + 1 }}.
+        </span>
+
+        <router-link
+          :to="`/${$route.params.rssId}/articles/${article.id}`"
+          class="article-link"
+          >{{ article.title }} ({{
+            article.published_at.slice(0, 10)
+          }})</router-link
         >
-          <span class="article-index"
-            >{{ (currentPage - 1) * pageSize + index + 1 }}.
-          </span>
+      </li>
+    </ul>
 
-          <router-link
-            :to="`/${$route.params.rssId}/articles/${article.id}`"
-            class="article-link"
-            >{{ article.title }} ({{
-              article.published_at.slice(0, 10)
-            }})</router-link
-          >
-        </li>
-      </ul>
-
-      <el-pagination
-        v-model:current-page="currentPage"
-        :page-size="pageSize"
-        :total="totalCount"
-        layout="prev, pager, next, total"
-        @current-change="handlePageChange"
-        class="pagination"
-      />
-    </div>
-
-    <!-- 文章详情部分（移动端隐藏） -->
-    <div class="article-detail-section">
-      <router-view />
-    </div>
+    <el-pagination
+      v-model:current-page="currentPage"
+      :page-size="pageSize"
+      :total="totalCount"
+      layout="prev, pager, next, total"
+      @current-change="handlePageChange"
+      class="pagination"
+    />
   </div>
 </template>
 
@@ -84,38 +76,57 @@ async function handlePageChange(page: number) {
 </script>
 
 <style scoped>
-.article-list-wrapper {
-  display: flex;
-  gap: 24px;
-  flex-direction: column;
+.article-list-container {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 2px solid rgba(102, 126, 234, 0.2);
 }
 
-.article-list-section {
-  text-align: left;
-}
-
-.article-list-section h2 {
+.article-list-title {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 1.5em;
   font-weight: 700;
   color: #2d3748;
-  padding-bottom: 12px;
-  border-bottom: 3px solid #667eea;
+  text-align: left;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .article-ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.article-ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.article-ul::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.article-ul::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 3px;
+}
+
+.article-ul::-webkit-scrollbar-thumb:hover {
+  background: #764ba2;
 }
 
 .article-item {
   display: flex;
   align-items: start;
   gap: 10px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
   border-radius: 10px;
   background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -150,6 +161,7 @@ async function handlePageChange(page: number) {
   font-weight: 500;
   line-height: 1.5;
   transition: color 0.2s;
+  font-size: 0.95em;
 }
 
 .article-link:visited {
@@ -164,39 +176,23 @@ async function handlePageChange(page: number) {
   margin-top: 20px;
 }
 
-.article-detail-section {
-  flex: 1;
-  padding-top: 24px;
-  border-top: 2px solid #e2e8f0;
-}
-
-/* 移动端：垂直排列，隐藏详情（通过路由切换） */
+/* 移动端优化 */
 @media (max-width: 768px) {
-  .article-list-wrapper {
-    flex-direction: column;
+  .article-list-container {
+    margin-top: 20px;
+    padding-top: 16px;
   }
   
-  .article-detail-section {
-    display: none;
+  .article-list-title {
+    font-size: 1.3em;
+  }
+  
+  .article-ul {
+    max-height: 400px;
   }
   
   .article-item {
-    padding: 12px 14px;
-  }
-  
-  .article-list-section h2 {
-    font-size: 1.3em;
-  }
-}
-
-/* PC端：无变化，保持垂直排列在右侧面板 */
-@media (min-width: 769px) {
-  .article-list-wrapper {
-    flex-direction: column;
-  }
-  
-  .article-detail-section {
-    display: block;
+    padding: 10px 12px;
   }
 }
 </style>
