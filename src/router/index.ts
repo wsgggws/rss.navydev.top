@@ -11,14 +11,26 @@ const routes = [
     children: [
       {
         path: ":rssId/articles",
-        component: ArticleList,
-        props: true,
+        components: {
+          default: ArticleDetail,
+          articleList: ArticleList,
+        },
+        props: {
+          default: true,
+          articleList: true,
+        },
         children: [
           {
             path: ":articleId",
-            component: ArticleDetail,
+            components: {
+              default: ArticleDetail,
+              articleList: ArticleList,
+            },
             name: "ArticleDetail",
-            props: true,
+            props: {
+              default: true,
+              articleList: true,
+            },
           },
         ],
       },
