@@ -1,74 +1,62 @@
 <template>
   <div class="rss-container">
-    <!-- 顶部右上角返回首页按钮 -->
-    <div class="top-right">
-      <router-link to="/" class="top-btn">🏠 返回首页</router-link>
-    </div>
+    <el-row :gutter="10" type="flex" class="main-row">
+      <!-- 左侧面板：RSS列表 + 文章列表（PC端） -->
+      <el-col :xs="24" :md="8" class="left-panel">
+        <!-- RSS 订阅列表 -->
+        <div class="rss-section">
+          <h1 class="title">📡 我的RSS订阅</h1>
 
-    <el-row :gutter="10" type="flex" class="main-row responsive-layout">
-      <el-col :xs="24" :md="4" class="left-panel">
-        <h1 class="title">📡 我的RSS订阅</h1>
-
-        <!-- 添加订阅 -->
-        <div class="flex gap-2 mt-4">
-          <el-input
-            v-model="newUrl"
-            placeholder="👉 输入RSS链接，添加你专属订阅..."
-            class="flex-1 border rounded px-3 py-2"
-          />
-          <el-button type="primary" :loading="adding" @click="handleAdd"
-            >👆添加订阅</el-button
-          >
-        </div>
-
-        <!-- 加载中 -->
-        <div v-if="loading" class="text-center text-gray-500 mt-4">
-          <el-icon><Loading /></el-icon> 加载中...
-        </div>
-
-        <!-- 错误提示 -->
-        <el-alert
-          v-if="errorMsg"
-          title="出错了"
-          type="error"
-          :description="errorMsg"
-          show-icon
-          closable
-          @close="errorMsg = ''"
-          class="mt-4"
-        />
-
-        <!-- 订阅列表 -->
-        <div v-if="subscriptions.length > 0 && !loading" class="space-y-2 mt-4">
-          <div v-for="rss in subscriptions" :key="rss.id" class="rss-item">
-            <el-button
-              type="danger"
-              size="small"
-              class="delete-btn"
-              @click="() => confirmDelete(rss.id)"
-              >删除</el-button
-            >
-            <router-link :to="`/rss/${rss.id}/articles`" class="rss-title">{{
-              rss.title
-            }}</router-link>
+          <!-- 加载中 -->
+          <div v-if="loading" class="loading-msg">
+            <el-icon><Loading /></el-icon> 加载中...
           </div>
-        </div>
-        <div v-else-if="!loading && !errorMsg" class="text-gray-500 mt-4">
-          暂无订阅
-        </div>
 
-        <!-- 分页 -->
-        <el-pagination
-          v-model:current-page="currentPage"
-          :page-size="pageSize"
-          :total="totalCount"
-          layout="prev, pager, next, total"
-          @current-change="fetchSubscriptions"
-          class="mt-6"
-        />
+          <!-- 错误提示 -->
+          <el-alert
+            v-if="errorMsg"
+            title="出错了"
+            type="error"
+            :description="errorMsg"
+            show-icon
+            closable
+            @close="errorMsg = ''"
+            class="error-msg"
+          />
+
+          <!-- 订阅列表 -->
+          <div v-if="subscriptions.length > 0 && !loading" class="rss-list">
+            <div v-for="rss in subscriptions" :key="rss.id" class="rss-item">
+              <el-button
+                type="danger"
+                size="small"
+                class="delete-btn"
+                @click="() => confirmDelete(rss.id)"
+                >删除</el-button
+              >
+              <router-link :to="`/${rss.id}/articles`" class="rss-title">{{
+                rss.title
+              }}</router-link>
+            </div>
+          </div>
+          <div v-else-if="!loading && !errorMsg" class="empty-msg">
+            暂无订阅
+          </div>
+
+          <!-- 分页 -->
+          <el-pagination
+            v-model:current-page="currentPage"
+            :page-size="pageSize"
+            :total="totalCount"
+            layout="prev, pager, next, total"
+            @current-change="fetchSubscriptions"
+            class="pagination"
+          />
+        </div>
       </el-col>
 
-      <el-col :xs="24" :md="20" class="right-panel">
+      <!-- 右侧面板：嵌套路由内容（文章列表 + 详情） -->
+      <el-col :xs="24" :md="16" class="right-panel">
         <router-view />
       </el-col>
     </el-row>
@@ -82,7 +70,6 @@ import { Loading } from "@element-plus/icons-vue";
 
 import {
   getAllSubscriptions,
-  addSubscription,
   deleteSubscription,
   type SubscriptionItem,
 } from "../api/subscription";
@@ -92,10 +79,8 @@ const subscriptions = ref<SubscriptionItem[]>([]);
 const totalCount = ref(0);
 const currentPage = ref(1);
 const pageSize = 12;
-const newUrl = ref();
 
 const loading = ref(false);
-const adding = ref(false);
 const errorMsg = ref("");
 
 async function confirmDelete(id: string) {
@@ -133,25 +118,6 @@ onMounted(() => {
   setTimeout(fetchSubscriptions, 100);
 });
 
-const handleAdd = async () => {
-  if (!newUrl.value?.trim()) {
-    ElMessage.warning("请输入订阅链接");
-    return;
-  }
-
-  adding.value = true;
-  try {
-    await addSubscription({ url: newUrl.value.trim() });
-    ElMessage.success("添加成功");
-    fetchSubscriptions();
-  } catch (err: any) {
-    handleApiError(err);
-  } finally {
-    adding.value = false;
-    newUrl.value = "";
-  }
-};
-
 const handleDelete = async (id: string) => {
   try {
     await deleteSubscription(id);
@@ -167,72 +133,122 @@ const handleDelete = async (id: string) => {
 .rss-container {
   position: relative;
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding-top: 20px;
 }
 
-.top-right {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  z-index: 10;
-}
-
-.top-btn {
-  padding: 6px 12px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  text-decoration: none;
-}
-
-.top-btn:hover {
-  background-color: #369d73;
+.main-row {
+  align-items: flex-start;
 }
 
 .title {
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.left-panel,
-.right-panel {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
+.left-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 24px;
+  border-radius: 16px;
   margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.right-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  min-height: 500px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.rss-section {
+  margin-bottom: 0;
+}
+
+.loading-msg,
+.empty-msg {
+  text-align: center;
+  color: #718096;
+  margin-top: 20px;
+}
+
+.error-msg {
+  margin-top: 20px;
+}
+
+.rss-list {
+  margin-top: 20px;
+}
+
+.pagination {
+  margin-top: 24px;
 }
 
 .rss-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f9f9f9;
-  padding: 10px 12px;
-  border-radius: 6px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.rss-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #e0e7ff 0%, #b8c5e0 100%);
 }
 
 .rss-title {
   flex: 1;
   text-align: left;
-  color: #333;
-  font-weight: 500;
+  color: #2d3748;
+  font-weight: 600;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .rss-title:hover {
-  color: #42b983;
+  color: #667eea;
 }
 
 .delete-btn {
-  margin-right: 16px;
+  margin-right: 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
 }
 
+.delete-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 移动端优化 */
 @media (max-width: 768px) {
-  .top-right {
-    right: 10px;
+  .left-panel,
+  .right-panel {
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+  }
+  
+  .right-panel {
+    min-height: auto;
+  }
+  
+  .title {
+    font-size: 1.5em;
   }
 }
 </style>

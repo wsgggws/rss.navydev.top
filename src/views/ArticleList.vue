@@ -1,26 +1,26 @@
 <template>
-  <el-row :gutter="8" type="flex" class="article-layout">
-    <el-col :xs="24" :md="10" class="article-list">
+  <div class="article-list-wrapper">
+    <!-- 文章列表部分 -->
+    <div class="article-list-section">
       <h2>文章列表</h2>
-      <ul class="pl-0">
+      <ul class="article-ul">
         <li
           v-for="(article, index) in articles"
           :key="article.id"
           :class="[
-            'flex items-start gap-1',
+            'article-item',
             article.id.toString() === $route.params.articleId
-              ? 'bg-yellow-300'
+              ? 'active'
               : '',
           ]"
         >
-          <span class="text-gray-500"
+          <span class="article-index"
             >{{ (currentPage - 1) * pageSize + index + 1 }}.
           </span>
 
           <router-link
-            :to="`/rss/${$route.params.rssId}/articles/${article.id}`"
-            class="text-blue-500 visited:text-purple-600"
-            style="text-decoration: none"
+            :to="`/${$route.params.rssId}/articles/${article.id}`"
+            class="article-link"
             >{{ article.title }} ({{
               article.published_at.slice(0, 10)
             }})</router-link
@@ -34,13 +34,15 @@
         :total="totalCount"
         layout="prev, pager, next, total"
         @current-change="handlePageChange"
+        class="pagination"
       />
-    </el-col>
+    </div>
 
-    <el-col :xs="24" :md="14" class="article-detail">
+    <!-- 文章详情部分（移动端隐藏） -->
+    <div class="article-detail-section">
       <router-view />
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts" name="ArticleList">
@@ -82,17 +84,119 @@ async function handlePageChange(page: number) {
 </script>
 
 <style scoped>
-.article-layout {
-  flex-wrap: wrap;
+.article-list-wrapper {
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
 }
 
-.article-list,
-.article-detail {
-  margin-bottom: 20px;
-}
-
-ul,
-li {
+.article-list-section {
   text-align: left;
+}
+
+.article-list-section h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #2d3748;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #667eea;
+}
+
+.article-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.article-item {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.article-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  border-left-color: #667eea;
+}
+
+.article-item.active {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-left-color: #e17055;
+  box-shadow: 0 4px 12px rgba(225, 112, 85, 0.2);
+}
+
+.article-index {
+  color: #718096;
+  flex-shrink: 0;
+  font-weight: 600;
+  min-width: 24px;
+}
+
+.article-link {
+  color: #4a5568;
+  text-decoration: none;
+  flex: 1;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: color 0.2s;
+}
+
+.article-link:visited {
+  color: #805ad5;
+}
+
+.article-link:hover {
+  color: #667eea;
+}
+
+.pagination {
+  margin-top: 20px;
+}
+
+.article-detail-section {
+  flex: 1;
+  padding-top: 24px;
+  border-top: 2px solid #e2e8f0;
+}
+
+/* 移动端：垂直排列，隐藏详情（通过路由切换） */
+@media (max-width: 768px) {
+  .article-list-wrapper {
+    flex-direction: column;
+  }
+  
+  .article-detail-section {
+    display: none;
+  }
+  
+  .article-item {
+    padding: 12px 14px;
+  }
+  
+  .article-list-section h2 {
+    font-size: 1.3em;
+  }
+}
+
+/* PC端：无变化，保持垂直排列在右侧面板 */
+@media (min-width: 769px) {
+  .article-list-wrapper {
+    flex-direction: column;
+  }
+  
+  .article-detail-section {
+    display: block;
+  }
 }
 </style>
