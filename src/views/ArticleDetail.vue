@@ -86,13 +86,65 @@ const articleHtml = computed(() => {
     // 引用
     .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
     // 分割线
-    .replace(/^---$/gim, '<hr>')
+    .replace(/^---$/gim, '<hr>');
+  
+  // 处理列表（需要按行处理）
+  const lines = html.split('\n');
+  const result: string[] = [];
+  let inUnorderedList = false;
+  let inOrderedList = false;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+    
     // 无序列表
-    .replace(/^\* (.*$)/gim, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-    // 段落
+    if (trimmedLine.match(/^\* (.+)$/)) {
+      if (!inUnorderedList) {
+        result.push('<ul>');
+        inUnorderedList = true;
+      }
+      result.push(`<li>${trimmedLine.substring(2)}</li>`);
+    }
+    // 有序列表
+    else if (trimmedLine.match(/^\d+\.\s+(.+)$/)) {
+      if (!inOrderedList) {
+        if (inUnorderedList) {
+          result.push('</ul>');
+          inUnorderedList = false;
+        }
+        result.push('<ol>');
+        inOrderedList = true;
+      }
+      result.push(`<li>${trimmedLine.replace(/^\d+\.\s+/, '')}</li>`);
+    }
+    // 非列表项
+    else {
+      if (inUnorderedList) {
+        result.push('</ul>');
+        inUnorderedList = false;
+      }
+      if (inOrderedList) {
+        result.push('</ol>');
+        inOrderedList = false;
+      }
+      result.push(line);
+    }
+  }
+  
+  // 关闭未闭合的列表
+  if (inUnorderedList) result.push('</ul>');
+  if (inOrderedList) result.push('</ol>');
+  
+  // 段落处理
+  html = result.join('\n')
     .split('\n\n')
-    .map(para => para.trim() ? (para.startsWith('<') ? para : `<p>${para}</p>`) : '')
+    .map(para => {
+      const trimmed = para.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('<')) return trimmed;
+      return `<p>${trimmed}</p>`;
+    })
     .join('\n');
   
   return html;
