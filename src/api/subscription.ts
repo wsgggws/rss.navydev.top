@@ -23,6 +23,7 @@ export interface ArticleItem {
   published_at: string;
   summary_md?: string;
   title: string;
+  author?: string;
 }
 
 export interface ArticleListResponse {
