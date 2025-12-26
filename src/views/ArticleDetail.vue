@@ -71,8 +71,19 @@ const articleHtml = computed(() => {
     .replace(/```(\w+)?\n([\s\S]+?)```/g, '<pre><code>$2</code></pre>')
     // 标题
     .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  
+  // 移除第一个 H1 标题（避免与页面标题重复）
+  let hasRemovedFirstH1 = false;
+  html = html.replace(/^# (.*$)/gim, (match) => {
+    if (!hasRemovedFirstH1) {
+      hasRemovedFirstH1 = true;
+      return ''; // 移除第一个 H1
+    }
+    return '<h1>' + match.substring(2) + '</h1>';
+  });
+  
+  html = html
     // 粗体
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     // 斜体
