@@ -1,21 +1,15 @@
-# News-Summary-Front
+# RSS 订阅阅读平台
 
-Vue3 实现的 News-summary 前端项目
+基于 Vue3 + TypeScript 的 RSS 订阅阅读前端项目
 
 ## 线上体验地址
 
 - <https://rss.navydev.top/>
 
-`注册` 或者使用如下用户名密码登录体验
-
-- username: 码码要洗手
-- password: Mmyxs;!1
-
-## Depends
+## 技术栈
 
 - vue3
 - ts
-- pinia
 - vue-router
 - element-plus
 - axios
@@ -32,12 +26,8 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ## MVP
 
-![News-Summary-Front-MVP-Home](./png/home.png)
-
-![News-Summary-Front-MVP-RSS](./png/rss.png)
-
-![News-Summary-Front-移动端](./png/app-show.png)
+![RSS](./home.png)
 
 ## backend
 
-[news-summary](https://github.com/wsgggws/news-summary)
+[api.rss.navydev.top](https://github.com/wsgggws/api.rss.navydev.top)
