@@ -39,8 +39,12 @@
 
 <script setup lang="ts" name="ArticleList">
 import { ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 import { fetchArticles, type ArticleItem } from "../api/subscription";
+
+const router = useRouter();
+const route = useRoute();
 
 const articles = ref<ArticleItem[]>([]);
 const totalCount = ref(0);
@@ -60,6 +64,11 @@ async function loadArticles(rssId: string, page: number) {
   const data = await fetchArticles({ rssId, page, pageSize: pageSize.value });
   articles.value = data.items;
   totalCount.value = data.total;
+  
+  // 如果加载成功且有文章，且当前没有选中文章，自动跳转到第一篇
+  if (data.items.length > 0 && !route.params.articleId) {
+    router.replace(`/${rssId}/articles/${data.items[0].id}`);
+  }
 }
 // 获取数据
 watch(
