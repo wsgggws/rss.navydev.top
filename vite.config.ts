@@ -17,4 +17,31 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  build: {
+    // 代码分割优化
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+          'element-plus': ['element-plus'],
+        },
+      },
+    },
+    // 压缩优化
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    // 提高chunk大小警告阈值
+    chunkSizeWarningLimit: 1000,
+  },
+  server: {
+    // 开发服务器预热常用文件
+    warmup: {
+      clientFiles: ['./src/views/*.vue', './src/router/index.ts'],
+    },
+  },
 });
