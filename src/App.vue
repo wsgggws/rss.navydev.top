@@ -33,6 +33,13 @@ body {
   padding: 20px;
 }
 
+/* 移动端优化 */
+@media (max-width: 768px) {
+  #app {
+    padding: 6px;
+  }
+}
+
 nav {
   margin-bottom: 20px;
 }

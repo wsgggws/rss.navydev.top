@@ -215,18 +215,18 @@ onMounted(() => {
 /* 移动端优化 */
 @media (max-width: 768px) {
   .left-panel {
-    padding: 12px 8px;
-    margin-bottom: 10px;
-    border-radius: 12px;
+    padding: 10px 6px;
+    margin-bottom: 6px;
+    border-radius: 8px;
     max-height: none;
     position: relative;
     top: 0;
   }
   
   .right-panel {
-    padding: 12px 8px;
-    margin-bottom: 10px;
-    border-radius: 12px;
+    padding: 10px 6px;
+    margin-bottom: 6px;
+    border-radius: 8px;
     min-height: auto;
   }
   
