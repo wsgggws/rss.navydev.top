@@ -27,13 +27,6 @@
           <!-- 订阅列表 -->
           <div v-if="subscriptions.length > 0 && !loading" class="rss-list">
             <div v-for="rss in subscriptions" :key="rss.id" class="rss-item">
-              <el-button
-                type="danger"
-                size="small"
-                class="delete-btn"
-                @click="() => confirmDelete(rss.id)"
-                >删除</el-button
-              >
               <router-link :to="`/${rss.id}/articles`" class="rss-title">{{
                 rss.title
               }}</router-link>
@@ -68,12 +61,10 @@
 
 <script setup lang="ts" name="RSSList">
 import { ref, onMounted } from "vue";
-import { ElMessageBox, ElMessage } from "element-plus";
 import { Loading } from "@element-plus/icons-vue";
 
 import {
   getAllSubscriptions,
-  deleteSubscription,
   type SubscriptionItem,
 } from "../api/subscription";
 import { handleApiError } from "../utils/handleError";
@@ -85,20 +76,6 @@ const pageSize = 6;
 
 const loading = ref(false);
 const errorMsg = ref("");
-
-async function confirmDelete(id: string) {
-  try {
-    await ElMessageBox.confirm("确定要删除该订阅吗？", "提示", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    });
-    handleDelete(id);
-    ElMessage.success("已删除");
-  } catch (error) {
-    ElMessage.info("已取消删除");
-  }
-}
 
 const fetchSubscriptions = async () => {
   loading.value = true;
@@ -118,18 +95,8 @@ const fetchSubscriptions = async () => {
 };
 
 onMounted(() => {
-  setTimeout(fetchSubscriptions, 100);
+  fetchSubscriptions();
 });
-
-const handleDelete = async (id: string) => {
-  try {
-    await deleteSubscription(id);
-    ElMessage.success("删除成功");
-    fetchSubscriptions();
-  } catch (err: any) {
-    handleApiError(err);
-  }
-};
 </script>
 
 <style scoped>
@@ -219,9 +186,6 @@ const handleDelete = async (id: string) => {
 }
 
 .rss-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 12px 16px;
   border-radius: 10px;
@@ -237,8 +201,7 @@ const handleDelete = async (id: string) => {
 }
 
 .rss-title {
-  flex: 1;
-  text-align: left;
+  display: block;
   color: #2d3748;
   font-weight: 600;
   text-decoration: none;
@@ -249,20 +212,10 @@ const handleDelete = async (id: string) => {
   color: #667eea;
 }
 
-.delete-btn {
-  margin-right: 12px;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.delete-btn:hover {
-  transform: scale(1.05);
-}
-
 /* 移动端优化 */
 @media (max-width: 768px) {
   .left-panel {
-    padding: 16px;
+    padding: 12px 8px;
     margin-bottom: 10px;
     border-radius: 12px;
     max-height: none;
@@ -271,10 +224,14 @@ const handleDelete = async (id: string) => {
   }
   
   .right-panel {
-    padding: 16px;
+    padding: 12px 8px;
     margin-bottom: 10px;
     border-radius: 12px;
     min-height: auto;
+  }
+  
+  .rss-item {
+    padding: 10px 12px;
   }
   
   .title {
