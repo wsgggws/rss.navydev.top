@@ -18,7 +18,10 @@ declare module 'vue' {
     ElInput: typeof import('element-plus/es')['ElInput']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElRow: typeof import('element-plus/es')['ElRow']
+    EmptyState: typeof import('./src/components/EmptyState.vue')['default']
+    ErrorState: typeof import('./src/components/ErrorState.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SkeletonLoader: typeof import('./src/components/SkeletonLoader.vue')['default']
   }
 }
