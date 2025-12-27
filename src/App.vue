@@ -22,6 +22,12 @@ html {
 body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  transition: background 0.3s ease;
+}
+
+/* 夜间模式 */
+html.dark body {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
 }
 
 #app {
@@ -31,6 +37,11 @@ body {
   text-align: center;
   color: #2c3e50;
   padding: 20px;
+  transition: color 0.3s ease;
+}
+
+html.dark #app {
+  color: #e2e8f0;
 }
 
 /* 移动端优化 */

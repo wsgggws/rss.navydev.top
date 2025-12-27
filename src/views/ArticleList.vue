@@ -1,38 +1,60 @@
 <template>
   <div class="article-list-container">
     <h2 class="article-list-title">📰 文章列表</h2>
-    <ul class="article-ul">
-      <li
-        v-for="(article, index) in articles"
-        :key="article.id"
-        :class="[
-          'article-item',
-          article.id.toString() === $route.params.articleId
-            ? 'active'
-            : '',
-        ]"
-      >
-        <span class="article-index"
-          >{{ (currentPage - 1) * pageSize + index + 1 }}.
-        </span>
-
-        <router-link
-          :to="`/${$route.params.rssId}/articles/${article.id}`"
-          class="article-link"
-          >{{ article.title }} ({{
-            article.published_at.slice(0, 10)
-          }})</router-link
+    
+    <!-- 加载中 -->
+    <SkeletonLoader v-if="loading" type="article-list" :count="pageSize" />
+    
+    <!-- 错误状态 -->
+    <ErrorState
+      v-else-if="errorMsg"
+      :message="errorMsg"
+      @retry="() => loadArticles(props.rssId, currentPage)"
+    />
+    
+    <!-- 文章列表 -->
+    <template v-else-if="articles.length > 0">
+      <ul class="article-ul">
+        <li
+          v-for="(article, index) in articles"
+          :key="article.id"
+          :class="[
+            'article-item',
+            article.id.toString() === $route.params.articleId
+              ? 'active'
+              : '',
+          ]"
         >
-      </li>
-    </ul>
+          <span class="article-index"
+            >{{ (currentPage - 1) * pageSize + index + 1 }}.
+          </span>
 
-    <el-pagination
-      v-model:current-page="currentPage"
-      :page-size="pageSize"
-      :total="totalCount"
-      layout="prev, pager, next, total"
-      @current-change="handlePageChange"
-      class="pagination"
+          <router-link
+            :to="`/${$route.params.rssId}/articles/${article.id}`"
+            class="article-link"
+            >{{ article.title }} ({{
+              article.published_at.slice(0, 10)
+            }})</router-link
+          >
+        </li>
+      </ul>
+
+      <el-pagination
+        v-model:current-page="currentPage"
+        :page-size="pageSize"
+        :total="totalCount"
+        layout="prev, pager, next, total"
+        @current-change="handlePageChange"
+        class="pagination"
+      />
+    </template>
+    
+    <!-- 空状态 -->
+    <EmptyState
+      v-else
+      icon="📄"
+      title="暂无文章"
+      description="该订阅暂无文章内容"
     />
   </div>
 </template>
@@ -40,6 +62,10 @@
 <script setup lang="ts" name="ArticleList">
 import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import SkeletonLoader from "../components/SkeletonLoader.vue";
+import EmptyState from "../components/EmptyState.vue";
+import ErrorState from "../components/ErrorState.vue";
+import { cacheManager } from "../utils/cache";
 
 import { fetchArticles, type ArticleItem } from "../api/subscription";
 
@@ -50,6 +76,8 @@ const articles = ref<ArticleItem[]>([]);
 const totalCount = ref(0);
 const currentPage = ref(1);
 const pageSize = ref(6);
+const loading = ref(false);
+const errorMsg = ref("");
 
 // 通过 props 接收 rssId
 const props = defineProps({
@@ -61,20 +89,51 @@ const props = defineProps({
 
 // 请求数据函数，带分页参数
 async function loadArticles(rssId: string, page: number) {
-  const data = await fetchArticles({ rssId, page, pageSize: pageSize.value });
-  articles.value = data.items;
-  totalCount.value = data.total;
+  loading.value = true;
+  errorMsg.value = "";
   
-  // 如果加载成功且有文章，且当前没有选中文章，自动跳转到第一篇
-  if (data.items.length > 0 && !route.params.articleId) {
-    router.replace(`/${rssId}/articles/${data.items[0].id}`);
+  // 尝试从缓存读取
+  const cacheKey = `articles_${rssId}_page_${page}`;
+  const cached = cacheManager.get<{items: ArticleItem[], total: number}>(cacheKey);
+  
+  if (cached) {
+    articles.value = cached.items;
+    totalCount.value = cached.total;
+    loading.value = false;
+    
+    // 如果加载成功且有文章，且当前没有选中文章，自动跳转到第一篇
+    if (cached.items.length > 0 && !route.params.articleId) {
+      router.replace(`/${rssId}/articles/${cached.items[0].id}`);
+    }
+    return;
+  }
+  
+  try {
+    const data = await fetchArticles({ rssId, page, pageSize: pageSize.value });
+    articles.value = data.items;
+    totalCount.value = data.total;
+    
+    // 缓存数据
+    cacheManager.set(cacheKey, data, 3 * 60 * 1000); // 3分钟
+    
+    // 如果加载成功且有文章，且当前没有选中文章，自动跳转到第一篇
+    if (data.items.length > 0 && !route.params.articleId) {
+      router.replace(`/${rssId}/articles/${data.items[0].id}`);
+    }
+  } catch (err: any) {
+    errorMsg.value = err?.response?.data?.detail || err?.message || "加载失败，请稍后重试";
+  } finally {
+    loading.value = false;
   }
 }
 // 获取数据
 watch(
   () => props.rssId,
   async (rssId) => {
-    if (rssId) await loadArticles(rssId, currentPage.value);
+    if (rssId) {
+      currentPage.value = 1; // 重置页码
+      await loadArticles(rssId, currentPage.value);
+    }
   },
   { immediate: true },
 );
@@ -183,6 +242,43 @@ async function handlePageChange(page: number) {
 
 .pagination {
   margin-top: 20px;
+}
+
+/* 夜间模式 */
+:deep(.dark) .article-list-container {
+  border-top-color: rgba(102, 126, 234, 0.3);
+}
+
+:deep(.dark) .article-ul::-webkit-scrollbar-track {
+  background: #1a202c;
+}
+
+:deep(.dark) .article-item {
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+:deep(.dark) .article-item:hover {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+:deep(.dark) .article-item.active {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+:deep(.dark) .article-index {
+  color: #a0aec0;
+}
+
+:deep(.dark) .article-link {
+  color: #e2e8f0;
+}
+
+:deep(.dark) .article-link:visited {
+  color: #c4b5fd;
+}
+
+:deep(.dark) .article-link:hover {
+  color: #a5b4fc;
 }
 
 /* 移动端优化 */

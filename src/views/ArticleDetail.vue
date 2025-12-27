@@ -104,48 +104,82 @@ const articleHtml = computed(() => {
   const result: string[] = [];
   let inUnorderedList = false;
   let inOrderedList = false;
+  let listDepth = 0;
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmedLine = line.trim();
     
-    // 无序列表
-    if (trimmedLine.match(/^\* (.+)$/)) {
-      if (!inUnorderedList) {
+    // 检测缩进级别（每2个空格为一级）
+    const indentMatch = line.match(/^(\s*)/);
+    const indent = indentMatch ? Math.floor(indentMatch[1].length / 2) : 0;
+    
+    // 无序列表 ("-" 或 "*")
+    if (trimmedLine.match(/^[-*]\s+(.+)$/)) {
+      if (!inUnorderedList || indent > listDepth) {
         result.push('<ul>');
         inUnorderedList = true;
+        listDepth = indent;
+      } else if (indent < listDepth) {
+        // 减少缩进，关闭嵌套列表
+        for (let d = listDepth; d > indent; d--) {
+          result.push('</ul>');
+        }
+        listDepth = indent;
       }
-      result.push(`<li>${trimmedLine.substring(2)}</li>`);
+      const content = trimmedLine.replace(/^[-*]\s+/, '');
+      result.push(`<li>${content}</li>`);
     }
     // 有序列表
     else if (trimmedLine.match(/^\d+\.\s+(.+)$/)) {
-      if (!inOrderedList) {
-        if (inUnorderedList) {
+      if (!inOrderedList || indent > listDepth) {
+        if (inUnorderedList && indent <= listDepth) {
           result.push('</ul>');
           inUnorderedList = false;
         }
         result.push('<ol>');
         inOrderedList = true;
+        listDepth = indent;
+      } else if (indent < listDepth) {
+        for (let d = listDepth; d > indent; d--) {
+          result.push('</ol>');
+        }
+        listDepth = indent;
       }
-      result.push(`<li>${trimmedLine.replace(/^\d+\.\s+/, '')}</li>`);
+      const content = trimmedLine.replace(/^\d+\.\s+/, '');
+      result.push(`<li>${content}</li>`);
     }
     // 非列表项
     else {
       if (inUnorderedList) {
-        result.push('</ul>');
+        for (let d = 0; d <= listDepth; d++) {
+          result.push('</ul>');
+        }
         inUnorderedList = false;
+        listDepth = 0;
       }
       if (inOrderedList) {
-        result.push('</ol>');
+        for (let d = 0; d <= listDepth; d++) {
+          result.push('</ol>');
+        }
         inOrderedList = false;
+        listDepth = 0;
       }
       result.push(line);
     }
   }
   
   // 关闭未闭合的列表
-  if (inUnorderedList) result.push('</ul>');
-  if (inOrderedList) result.push('</ol>');
+  if (inUnorderedList) {
+    for (let d = 0; d <= listDepth; d++) {
+      result.push('</ul>');
+    }
+  }
+  if (inOrderedList) {
+    for (let d = 0; d <= listDepth; d++) {
+      result.push('</ol>');
+    }
+  }
   
   // 段落处理
   html = result.join('\n')
@@ -506,6 +540,92 @@ function formatDate(dateString: string) {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 夜间模式 */
+:deep(.dark) .article-detail-wrapper {
+  color: #e2e8f0;
+}
+
+:deep(.dark) .article-title {
+  color: #f7fafc;
+}
+
+:deep(.dark) .article-header {
+  border-image: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-image-slice: 1;
+}
+
+:deep(.dark) .meta-item {
+  color: #a0aec0;
+}
+
+:deep(.dark) .markdown-body {
+  color: #e2e8f0;
+}
+
+:deep(.dark) .markdown-body h1,
+:deep(.dark) .markdown-body h2,
+:deep(.dark) .markdown-body h3,
+:deep(.dark) .markdown-body h4,
+:deep(.dark) .markdown-body h5,
+:deep(.dark) .markdown-body h6 {
+  color: #f7fafc;
+}
+
+:deep(.dark) .markdown-body h1,
+:deep(.dark) .markdown-body h2 {
+  border-bottom-color: #4a5568;
+}
+
+:deep(.dark) .markdown-body a {
+  color: #a5b4fc;
+}
+
+:deep(.dark) .markdown-body a:hover {
+  color: #c4b5fd;
+  border-bottom-color: #c4b5fd;
+}
+
+:deep(.dark) .markdown-body li::marker {
+  color: #a5b4fc;
+}
+
+:deep(.dark) .markdown-body blockquote {
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  border-left-color: #667eea;
+  color: #cbd5e0;
+}
+
+:deep(.dark) .markdown-body code {
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  color: #f687b3;
+  border-color: #4a5568;
+}
+
+:deep(.dark) .markdown-body th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+:deep(.dark) .markdown-body td {
+  border-bottom-color: #4a5568;
+}
+
+:deep(.dark) .markdown-body tr:hover {
+  background: #2d3748;
+}
+
+:deep(.dark) .article-footer {
+  border-top-color: #4a5568;
+}
+
+:deep(.dark) .loading-state {
+  color: #a0aec0;
+}
+
+:deep(.dark) .loading-spinner {
+  border-color: #4a5568;
+  border-top-color: #667eea;
 }
 
 /* 移动端优化 */
