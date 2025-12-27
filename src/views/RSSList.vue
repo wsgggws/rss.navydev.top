@@ -90,7 +90,6 @@ import {
   getAllSubscriptions,
   type SubscriptionItem,
 } from "../api/subscription";
-import { handleApiError } from "../utils/handleError";
 
 const { isDark, toggleTheme } = useDarkMode();
 
