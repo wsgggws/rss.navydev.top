@@ -80,6 +80,7 @@
 
 <script setup lang="ts" name="RSSList">
 import { ref, onMounted, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import SkeletonLoader from "../components/SkeletonLoader.vue";
 import EmptyState from "../components/EmptyState.vue";
 import ErrorState from "../components/ErrorState.vue";
@@ -91,6 +92,8 @@ import {
   type SubscriptionItem,
 } from "../api/subscription";
 
+const route = useRoute();
+const router = useRouter();
 const { isDark, toggleTheme } = useDarkMode();
 
 const subscriptions = ref<SubscriptionItem[]>([]);
@@ -124,6 +127,10 @@ const fetchSubscriptions = async () => {
   if (cached) {
     subscriptions.value = cached.items;
     totalCount.value = cached.total;
+    // 如果有订阅且当前没有选中订阅，自动跳转到第一个订阅
+    if (cached.items.length > 0 && !route.params.rssId) {
+      router.replace(`/${cached.items[0].id}/articles`);
+    }
     loading.value = false;
     return;
   }
@@ -138,6 +145,11 @@ const fetchSubscriptions = async () => {
     
     // 缓存数据
     cacheManager.set(cacheKey, data, 3 * 60 * 1000); // 3分钟
+
+    // 如果有订阅且当前没有选中订阅，自动跳转到第一个订阅
+    if (data.items.length > 0 && !route.params.rssId) {
+      router.replace(`/${data.items[0].id}/articles`);
+    }
   } catch (err: any) {
     errorMsg.value = err?.response?.data?.detail || err?.message || "加载失败，请稍后重试";
   } finally {
