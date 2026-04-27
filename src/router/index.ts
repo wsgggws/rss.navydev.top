@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const RSSList = () => import("../views/RSSList.vue");
 const ArticleList = () => import("../views/ArticleList.vue");
 const ArticleDetail = () => import("../views/ArticleDetail.vue");
+const NotFound = () => import("../views/NotFound.vue");
 
 const routes = [
   {
@@ -35,6 +36,10 @@ const routes = [
         ],
       },
     ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: NotFound,
   },
 ];
 
