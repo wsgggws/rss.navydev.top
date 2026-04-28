@@ -11,11 +11,13 @@
   "dependencies": {
     "animal-island-ui": "^0.7.4",
     "axios": "^1.7.4",
+    "dompurify": "^3.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.0"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^25.6.0",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",

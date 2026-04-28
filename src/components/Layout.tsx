@@ -5,9 +5,11 @@ interface LayoutProps {
   children: ReactNode
   isDark: boolean
   onThemeToggle: () => void
+  sidebarOpen: boolean
+  onSidebarToggle: () => void
 }
 
-function Layout({ children, isDark, onThemeToggle }: LayoutProps) {
+function Layout({ children, isDark, onThemeToggle, sidebarOpen, onSidebarToggle }: LayoutProps) {
   return (
     <div
       style={{
@@ -21,6 +23,8 @@ function Layout({ children, isDark, onThemeToggle }: LayoutProps) {
         title="📡 RSS Reader"
         isDark={isDark}
         onThemeToggle={onThemeToggle}
+        onMenuToggle={onSidebarToggle}
+        sidebarOpen={sidebarOpen}
       />
       <main
         style={{

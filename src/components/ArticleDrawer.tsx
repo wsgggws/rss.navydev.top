@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Modal } from 'animal-island-ui'
 import { fetchArticleDetail, ArticleItem } from '../api/subscription'
+import DOMPurify from 'dompurify'
 
 interface ArticleDrawerProps {
   rssId: string
@@ -14,23 +15,25 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (article) {
-      fetchDetail()
-    }
-  }, [article?.id])
-
-  async function fetchDetail() {
     if (!article) return
-    try {
-      setLoading(true)
-      const data = await fetchArticleDetail(rssId, article.id)
-      setDetail(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '加载失败')
-    } finally {
-      setLoading(false)
+
+    const articleId = article.id
+    let cancelled = false
+    async function loadDetail() {
+      try {
+        setLoading(true)
+        const data = await fetchArticleDetail(rssId, articleId)
+        if (!cancelled) setDetail(data)
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : '加载失败')
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
-  }
+
+    loadDetail()
+    return () => { cancelled = true }
+  }, [article?.id, rssId])
 
   if (!article) return null
 
@@ -60,6 +63,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
       width="60%"
       maskClosable
       closable
+      className="article-drawer-modal"
     >
       {loading && (
         <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -108,16 +112,18 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
               lineHeight: 1.8,
             }}
             dangerouslySetInnerHTML={{
-              __html: (displayArticle.summary_md || '')
-                .replace(/^# .*/gm, '')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(
-                  /`([^`]+)`/g,
-                  '<code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;">$1</code>'
-                )
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br/>'),
+              __html: DOMPurify.sanitize(
+                (displayArticle.summary_md || '')
+                  .replace(/^# .*/gm, '')
+                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                  .replace(
+                    /`([^`]+)`/g,
+                    '<code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;">$1</code>'
+                  )
+                  .replace(/\n\n/g, '</p><p>')
+                  .replace(/\n/g, '<br/>')
+              ),
             }}
           />
           <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>

@@ -20,11 +20,19 @@ export interface ArticleItem {
   summary_md?: string
   title: string
   author?: string
+  rss_id?: string
 }
 
 export interface ArticleListResponse {
   items: ArticleItem[]
   total: number
+}
+
+export interface ArticleFilter {
+  rssIds?: string[]
+  search?: string
+  startDate?: string
+  endDate?: string
 }
 
 export async function getAllSubscriptions(params?: {
@@ -57,4 +65,16 @@ export async function fetchArticleDetail(
   articleId: string,
 ): Promise<ArticleItem> {
   return api.get(`/api/v1/rss/subscriptions/${rssId}/articles/${articleId}`)
+}
+
+export async function fetchAllArticles(params?: {
+  page?: number
+  pageSize?: number
+}): Promise<ArticleListResponse> {
+  const { page = 1, pageSize = 100 } = params || {}
+  const offset = (page - 1) * pageSize
+
+  return api.get('/api/v1/rss/articles', {
+    params: { limit: pageSize, offset },
+  })
 }

@@ -20,6 +20,7 @@ function ArticleCard({ article, onClick }: ArticleCardProps) {
     <Card
       type="default"
       onClick={onClick}
+      className="article-card"
       style={{
         display: 'flex',
         gap: '16px',
@@ -34,6 +35,7 @@ function ArticleCard({ article, onClick }: ArticleCardProps) {
       }}
     >
       <div
+        className="article-card-image"
         style={{
           width: '120px',
           height: '80px',

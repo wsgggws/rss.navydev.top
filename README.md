@@ -1,33 +1,43 @@
-# RSS 订阅阅读平台
+# RSS Reader
 
-基于 Vue3 + TypeScript 的 RSS 订阅阅读前端项目
+React 18 + Vite + TypeScript RSS 阅读器，使用 animal-island-ui 组件库。
 
-## 线上体验地址
+## 线上地址
 
 - <https://rss.navydev.top/>
 
 ## 技术栈
 
-- vue3
-- ts
-- vue-router
-- element-plus
-- axios
+- React 18
+- Vite
+- TypeScript
+- animal-island-ui
+- React Router v6
+- Axios
 
-## .env
+## 主题
+
+暗色赛博朋克风格，亮/暗模式切换。
+
+## 本地开发
+
+```bash
+npm install
+npm run dev
+```
+
+## 环境变量
 
 ```.env
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-## Run
+## 构建
 
-`npm run dev`
+```bash
+npm run build
+```
 
-## MVP
-
-![RSS](./home.png)
-
-## backend
+## 后端 API
 
 [api.rss.navydev.top](https://github.com/wsgggws/api.rss.navydev.top)

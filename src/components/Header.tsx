@@ -4,9 +4,11 @@ interface HeaderProps {
   title: string
   onThemeToggle?: () => void
   isDark?: boolean
+  onMenuToggle?: () => void
+  sidebarOpen?: boolean
 }
 
-function Header({ title, onThemeToggle, isDark }: HeaderProps) {
+function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: HeaderProps) {
   return (
     <header
       style={{
@@ -20,15 +22,36 @@ function Header({ title, onThemeToggle, isDark }: HeaderProps) {
         transition: 'background 0.3s ease, border-color 0.3s ease',
       }}
     >
-      <h1
-        style={{
-          color: 'var(--accent-primary)',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-        }}
-      >
-        {title}
-      </h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {onMenuToggle && (
+          <button
+            onClick={onMenuToggle}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1.5rem',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+            }}
+            aria-label="Toggle menu"
+          >
+            {sidebarOpen ? '✕' : '☰'}
+          </button>
+        )}
+        <h1
+          style={{
+            color: 'var(--accent-primary)',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+          }}
+        >
+          {title}
+        </h1>
+      </div>
       {onThemeToggle && (
         <div
           style={{

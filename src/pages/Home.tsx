@@ -1,39 +1,66 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import Sidebar from '../components/Sidebar'
 import ArticleList from '../components/ArticleList'
 import ArticleDrawer from '../components/ArticleDrawer'
 import { useDarkMode } from '../hooks/useDarkMode'
-import { ArticleItem } from '../api/subscription'
+import { ArticleItem, SubscriptionItem, getAllSubscriptions } from '../api/subscription'
 
 function Home() {
   const { isDark, toggleTheme } = useDarkMode()
   const [selectedRssId, setSelectedRssId] = useState<string | null>(null)
   const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([])
+
+  useEffect(() => {
+    fetchSubscriptions()
+  }, [])
+
+  async function fetchSubscriptions() {
+    try {
+      const data = await getAllSubscriptions({ page: 1, pageSize: 50 })
+      setSubscriptions(data.items)
+      // Auto-select first subscription if none selected
+      if (data.items.length > 0 && !selectedRssId) {
+        setSelectedRssId(data.items[0].id)
+      }
+    } catch (err) {
+      console.error('Failed to fetch subscriptions:', err)
+    }
+  }
+
+  const handleShowAllSubscriptions = () => {
+    setSelectedRssId(null)
+  }
 
   return (
-    <Layout isDark={isDark} onThemeToggle={toggleTheme}>
+    <Layout
+      isDark={isDark}
+      onThemeToggle={toggleTheme}
+      sidebarOpen={sidebarOpen}
+      onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+    >
       <Sidebar
         selectedId={selectedRssId}
         onSelect={setSelectedRssId}
+        onShowAll={handleShowAllSubscriptions}
+        subscriptions={subscriptions}
+        isMobileOpen={sidebarOpen}
+        onMobileClose={() => setSidebarOpen(false)}
       />
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       <div style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
-        {selectedRssId ? (
-          <ArticleList
-            rssId={selectedRssId}
-            onArticleClick={setSelectedArticle}
-          />
-        ) : (
-          <div
-            style={{
-              color: 'var(--text-secondary)',
-              textAlign: 'center',
-              marginTop: '40px',
-            }}
-          >
-            选择一个订阅源查看文章
-          </div>
-        )}
+        <ArticleList
+          rssId={selectedRssId}
+          subscriptions={subscriptions}
+          onArticleClick={setSelectedArticle}
+        />
       </div>
       <ArticleDrawer
         rssId={selectedRssId || ''}

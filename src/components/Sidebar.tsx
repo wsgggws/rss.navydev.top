@@ -1,42 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Input, Card } from 'animal-island-ui'
-import { getAllSubscriptions, SubscriptionItem } from '../api/subscription'
+import { SubscriptionItem } from '../api/subscription'
 
 interface SidebarProps {
   selectedId: string | null
   onSelect: (id: string) => void
+  onShowAll?: () => void
+  subscriptions: SubscriptionItem[]
+  isMobileOpen?: boolean
+  onMobileClose?: () => void
 }
 
-function Sidebar({ selectedId, onSelect }: SidebarProps) {
-  const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+function Sidebar({ selectedId, onSelect, onShowAll, subscriptions, isMobileOpen, onMobileClose }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('')
-
-  useEffect(() => {
-    fetchSubscriptions()
-  }, [])
-
-  async function fetchSubscriptions() {
-    try {
-      setLoading(true)
-      const data = await getAllSubscriptions({ page: 1, pageSize: 50 })
-      setSubscriptions(data.items)
-      if (data.items.length > 0 && !selectedId) {
-        onSelect(data.items[0].id)
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const filteredList = subscriptions.filter((sub) =>
     sub.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  return (
+  const sidebarContent = (
     <div
       style={{
         width: '280px',
@@ -74,31 +56,7 @@ function Sidebar({ selectedId, onSelect }: SidebarProps) {
         size="large"
       />
 
-      {loading && (
-        <div
-          style={{
-            color: 'var(--text-secondary)',
-            textAlign: 'center',
-            padding: '20px',
-          }}
-        >
-          加载中...
-        </div>
-      )}
-
-      {error && (
-        <div
-          style={{
-            color: 'var(--accent-primary)',
-            textAlign: 'center',
-            padding: '20px',
-          }}
-        >
-          {error}
-        </div>
-      )}
-
-      {!loading && !error && filteredList.length === 0 && (
+      {filteredList.length === 0 && (
         <div
           style={{
             color: 'var(--text-secondary)',
@@ -110,12 +68,49 @@ function Sidebar({ selectedId, onSelect }: SidebarProps) {
         </div>
       )}
 
+      {onShowAll && (
+        <Card
+          type="default"
+          onClick={() => {
+            onShowAll()
+            if (onMobileClose) onMobileClose()
+          }}
+          style={{
+            marginBottom: '16px',
+            padding: '14px 16px',
+            background: selectedId === null
+              ? 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)'
+              : 'var(--bg-card)',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            border: selectedId === null
+              ? '2px solid var(--accent-primary)'
+              : '1px solid var(--border-color)',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <div
+            style={{
+              color: selectedId === null ? 'white' : 'var(--text-primary)',
+              fontWeight: selectedId === null ? 'bold' : '600',
+              fontSize: '0.95rem',
+              textAlign: 'center',
+            }}
+          >
+            查看全部订阅
+          </div>
+        </Card>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {filteredList.map((sub) => (
           <Card
             key={sub.id}
             type="default"
-            onClick={() => onSelect(sub.id)}
+            onClick={() => {
+              onSelect(sub.id)
+              if (onMobileClose) onMobileClose()
+            }}
             style={{
               padding: '14px 16px',
               background:
@@ -150,6 +145,39 @@ function Sidebar({ selectedId, onSelect }: SidebarProps) {
         ))}
       </div>
     </div>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar - always visible */}
+      <div
+        className="hide-on-mobile"
+        style={{
+          width: '280px',
+          flexShrink: 0,
+        }}
+      >
+        {sidebarContent}
+      </div>
+
+      {/* Mobile drawer - custom implementation */}
+      <div
+        className="mobile-drawer"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '280px',
+          height: '100vh',
+          transform: isMobileOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.3s ease-in-out',
+          zIndex: 999,
+          boxShadow: isMobileOpen ? '4px 0 20px rgba(0,0,0,0.15)' : 'none',
+        }}
+      >
+        {sidebarContent}
+      </div>
+    </>
   )
 }
 
