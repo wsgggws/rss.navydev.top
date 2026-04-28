@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Input } from 'animal-island-ui'
 import { SubscriptionItem } from '../api/subscription'
 
 interface SidebarProps {
@@ -28,13 +27,21 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
         overflowY: 'auto',
       }}
     >
-      <Input
+      <input
+        type="text"
         placeholder="search"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         style={{
           marginBottom: '16px',
           width: '100%',
+          padding: '10px 14px',
+          background: 'var(--bg-secondary)',
+          border: '1px solid var(--border-color)',
+          color: 'var(--text-primary)',
+          fontSize: '0.9rem',
+          outline: 'none',
+          borderRadius: '0',
         }}
       />
 

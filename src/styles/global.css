@@ -126,15 +126,21 @@ body {
 .article-drawer-modal .animal-modalClipped-7IuAw {
   background: var(--bg-card) !important;
   color: var(--text-primary) !important;
+  animation: none !important;
+  clip-path: none !important;
+  padding: 24px 32px 32px !important;
 }
 
 .article-drawer-modal .animal-header-udOSi {
   background: var(--bg-card) !important;
   border-bottom-color: var(--border-color) !important;
+  padding-bottom: 12px !important;
 }
 
 .article-drawer-modal .animal-title-s6pv3 {
   color: var(--text-primary) !important;
+  font-size: 20px !important;
+  overflow: visible !important;
 }
 
 .article-drawer-modal .animal-close-U6E4A {
@@ -150,22 +156,22 @@ body {
   background: var(--bg-card) !important;
 }
 
-/* Search input dark mode fix (global for Sidebar) */
-[data-theme="dark"] .animal-wrapper-IRrhj {
+/* Search input override - both light and dark mode */
+.animal-wrapper-IRrhj.animal-wrapper-IRrhj {
   background: var(--bg-secondary) !important;
   border-color: var(--border-color) !important;
 }
 
-[data-theme="dark"] .animal-input-12WUn {
+.animal-input-12WUn.animal-input-12WUn {
   background: transparent !important;
   color: var(--text-primary) !important;
 }
 
-[data-theme="dark"] .animal-input-12WUn::placeholder {
+.animal-input-12WUn.animal-input-12WUn::placeholder {
   color: var(--text-secondary) !important;
 }
 
-/* Search input inside article drawer modal */
+/* Article drawer search input override */
 .article-drawer-modal .animal-wrapper-IRrhj {
   background: var(--bg-secondary) !important;
   border-color: var(--border-color) !important;

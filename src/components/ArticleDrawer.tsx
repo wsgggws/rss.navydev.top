@@ -116,7 +116,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
               }}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
-                  String(marked.parse(displayArticle.summary_md || 'no content'))
+                  String(marked.parse(displayArticle.summary_md || ''))
                 ),
               }}
             />
