@@ -4,14 +4,14 @@ import Sidebar from '../components/Sidebar'
 import ArticleList from '../components/ArticleList'
 import ArticleDrawer from '../components/ArticleDrawer'
 import { useDarkMode } from '../hooks/useDarkMode'
-import { ArticleItem, SubscriptionItem, getAllSubscriptions } from '../api/subscription'
+import { ArticleItem, getAllSubscriptions } from '../api/subscription'
 
 function Home() {
   const { isDark, toggleTheme } = useDarkMode()
-  const [selectedRssId, setSelectedRssId] = useState<string | null>(null)
+  const [selectedRssId, setSelectedRssId] = useState<string>('')
   const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([])
+  const [subscriptions, setSubscriptions] = useState<any[]>([])
 
   useEffect(() => {
     fetchSubscriptions()
@@ -21,17 +21,12 @@ function Home() {
     try {
       const data = await getAllSubscriptions({ page: 1, pageSize: 50 })
       setSubscriptions(data.items)
-      // Auto-select first subscription if none selected
       if (data.items.length > 0 && !selectedRssId) {
         setSelectedRssId(data.items[0].id)
       }
     } catch (err) {
       console.error('Failed to fetch subscriptions:', err)
     }
-  }
-
-  const handleShowAllSubscriptions = () => {
-    setSelectedRssId(null)
   }
 
   return (
@@ -44,7 +39,6 @@ function Home() {
       <Sidebar
         selectedId={selectedRssId}
         onSelect={setSelectedRssId}
-        onShowAll={handleShowAllSubscriptions}
         subscriptions={subscriptions}
         isMobileOpen={sidebarOpen}
         onMobileClose={() => setSidebarOpen(false)}
@@ -58,12 +52,11 @@ function Home() {
       <div style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
         <ArticleList
           rssId={selectedRssId}
-          subscriptions={subscriptions}
           onArticleClick={setSelectedArticle}
         />
       </div>
       <ArticleDrawer
-        rssId={selectedRssId || ''}
+        rssId={selectedRssId}
         article={selectedArticle}
         onClose={() => setSelectedArticle(null)}
       />

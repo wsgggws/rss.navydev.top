@@ -3,15 +3,14 @@ import { Input, Card } from 'animal-island-ui'
 import { SubscriptionItem } from '../api/subscription'
 
 interface SidebarProps {
-  selectedId: string | null
+  selectedId: string
   onSelect: (id: string) => void
-  onShowAll?: () => void
   subscriptions: SubscriptionItem[]
   isMobileOpen?: boolean
   onMobileClose?: () => void
 }
 
-function Sidebar({ selectedId, onSelect, onShowAll, subscriptions, isMobileOpen, onMobileClose }: SidebarProps) {
+function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileClose }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredList = subscriptions.filter((sub) =>
@@ -51,40 +50,6 @@ function Sidebar({ selectedId, onSelect, onShowAll, subscriptions, isMobileOpen,
         >
           {searchQuery ? '🔍 没有找到匹配的订阅' : '📭 暂无订阅'}
         </div>
-      )}
-
-      {onShowAll && (
-        <Card
-          type="default"
-          onClick={() => {
-            onShowAll()
-            if (onMobileClose) onMobileClose()
-          }}
-          style={{
-            marginBottom: '16px',
-            padding: '14px 16px',
-            background: selectedId === null
-              ? 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)'
-              : 'var(--bg-card)',
-            borderRadius: '10px',
-            cursor: 'pointer',
-            border: selectedId === null
-              ? '2px solid var(--accent-primary)'
-              : '1px solid var(--border-color)',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <div
-            style={{
-              color: selectedId === null ? 'white' : 'var(--text-primary)',
-              fontWeight: selectedId === null ? 'bold' : '600',
-              fontSize: '0.95rem',
-              textAlign: 'center',
-            }}
-          >
-            查看全部订阅
-          </div>
-        </Card>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
