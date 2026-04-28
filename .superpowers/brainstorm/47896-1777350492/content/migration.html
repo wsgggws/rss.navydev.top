@@ -1,0 +1,26 @@
+<h2>迁移策略</h2>
+<p class="subtitle">如何处理从 Vue 到 React 的过渡</p>
+
+<div class="options">
+  <div class="option" data-choice="big-bang" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Big Bang (一次性整体替换)</h3>
+      <p>新建 React 项目，完成后一次性替换。新旧代码不共存，布署一次搞定。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="gradual" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>渐进式迁移 (推荐)</h3>
+      <p>保留 Vue 项目，新建 React 子模块逐个迁移。风险低，可随时回滚。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="parallel" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>并行双轨</h3>
+      <p>React 和 Vue 同时运行，通过路由区分。开发和测试成本高。</p>
+    </div>
+  </div>
+</div>

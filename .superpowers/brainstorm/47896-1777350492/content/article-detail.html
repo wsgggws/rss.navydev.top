@@ -1,0 +1,26 @@
+<h2>文章详情展示方式</h2>
+<p class="subtitle">当用户点击文章时，内容如何呈现？</p>
+
+<div class="options">
+  <div class="option" data-choice="slide-panel" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>右侧滑出面板 (Drawer)</h3>
+      <p>文章从右侧滑入，覆盖部分列表，保持列表可见，方便快速切换文章。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="modal-popup" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>居中模态弹窗</h3>
+      <p>文章在中间弹出，覆盖全部内容，沉浸式阅读体验，适合专注阅读。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="full-replace" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>全屏替换</h3>
+      <p>点击后整个页面变成文章阅读视图，关闭后回到列表。更直观但切换成本高。</p>
+    </div>
+  </div>
+</div>

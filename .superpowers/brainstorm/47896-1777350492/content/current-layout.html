@@ -1,0 +1,73 @@
+<h2>当前布局 vs React 重构方向</h2>
+<p class="subtitle">左边是现有的 Vue 布局，右边是 React 重构的参考方向</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">当前 Vue 布局</div>
+    <div class="mockup-body">
+      <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: white; font-weight: bold;">📡 我的RSS订阅</span>
+        <button style="background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 8px; color: white; cursor: pointer;">☀️/🌙</button>
+      </div>
+      <div style="padding: 16px; background: #f5f7fa;">
+        <input style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 16px;" placeholder="搜索订阅..." />
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 12px; border-radius: 8px; color: white; font-weight: bold;">36kr</div>
+          <div style="background: #e8eaf0; padding: 12px; border-radius: 8px;">Hacker News</div>
+          <div style="background: #e8eaf0; padding: 12px; border-radius: 8px;">Solidot</div>
+          <div style="background: #e8eaf0; padding: 12px; border-radius: 8px;">少数派</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">React + animal-island-ui 重构方向</div>
+    <div class="mockup-body">
+      <div style="background: #1a1a2e; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: #e94560; font-weight: bold;">📡 RSS Reader</span>
+        <div style="display: flex; gap: 8px;">
+          <button style="background: #e94560; border: none; padding: 6px 14px; border-radius: 6px; color: white; cursor: pointer;">亮</button>
+          <button style="background: rgba(255,255,255,0.1); border: none; padding: 6px 14px; border-radius: 6px; color: white; cursor: pointer;">暗</button>
+        </div>
+      </div>
+      <div style="padding: 16px; background: #16213e;">
+        <input style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #0f3460; background: #0f3460; color: white; margin-bottom: 16px;" placeholder="搜索订阅..." />
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: #e94560; padding: 12px; border-radius: 8px; color: white; font-weight: bold;">36kr</div>
+          <div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a2a2a2;">Hacker News</div>
+          <div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a2a2a2;">Solidot</div>
+          <div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a2a2a2;">少数派</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 32px;">
+  <h3>animal-island-ui 组件风格</h3>
+  <p class="subtitle">这个 UI 库的设计语言是什么？我需要先了解它的组件风格，才能提出合适的设计方案。</p>
+
+  <div class="options">
+    <div class="option" data-choice="dark-fantasy" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>暗色系 + 红色强调 (深空/赛博朋克风格)</h3>
+        <p>类似右边预览的深色背景配红色/粉色强调色，科技感强</p>
+      </div>
+    </div>
+    <div class="option" data-choice="light-modern" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>亮色系 + 彩色渐变 (现代卡片风格)</h3>
+        <p>类似现有 Vue 版的渐变紫蓝色调，清新明快</p>
+      </div>
+    </div>
+    <div class="option" data-choice="neutral-minimal" onclick="toggleSelect(this)">
+      <div class="letter">C</div>
+      <div class="content">
+        <h3>中性色 + 极简风格</h3>
+        <p>黑白灰为主，简约留白，突出内容</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<h2>React 技术栈选择</h2>
+<p class="subtitle">确定关键的技术决策</p>
+
+<div class="options">
+  <div class="option" data-choice="vite" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Vite + React 18 + animal-island-ui</h3>
+      <p>使用 Vite 作为构建工具，React 18 新特性（Suspense, startTransition），UI 组件直接用 animal-island-ui。推荐。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="nextjs" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Next.js (App Router) + animal-island-ui</h3>
+      <p>使用 Next.js 框架，更适合 SSR/SEO，但 animal-island-ui 需要确认是否支持 Next.js。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="turborepo" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>保持 Vite + 渐进式迁移</h3>
+      <p>不另起新项目，在现有 Vue 项目中通过多页或 iframe 嵌入 React 页面，逐步迁移。适合不想一次性重写的情况。</p>
+    </div>
+  </div>
+</div>
