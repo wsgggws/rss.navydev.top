@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Input } from 'animal-island-ui'
 import { getAllSubscriptions, SubscriptionItem } from '../api/subscription'
 
 interface SidebarProps {
@@ -32,51 +33,45 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
     }
   }
 
-  const filteredList = subscriptions.filter(sub =>
+  const filteredList = subscriptions.filter((sub) =>
     sub.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
-    <div style={{
-      width: '240px',
-      background: isDark ? '#0f3460' : '#ffffff',
-      padding: '16px',
-      borderRight: `1px solid ${isDark ? '#0f3460' : '#e2e8f0'}`,
-      minHeight: '100%',
-      overflowY: 'auto',
-    }}>
-      <h2 style={{
-        color: isDark ? '#e94560' : '#667eea',
-        marginBottom: '16px',
-        fontSize: '1.1rem',
-      }}>
+    <div
+      style={{
+        width: '240px',
+        background: isDark ? '#0f3460' : '#ffffff',
+        padding: '16px',
+        borderRight: `1px solid ${isDark ? '#0f3460' : '#e2e8f0'}`,
+        minHeight: '100%',
+        overflowY: 'auto',
+      }}
+    >
+      <h2
+        style={{
+          color: isDark ? '#e94560' : '#667eea',
+          marginBottom: '16px',
+          fontSize: '1.1rem',
+        }}
+      >
         📡 我的订阅
       </h2>
 
-      <input
-        type="text"
+      <Input
         placeholder="搜索订阅..."
         value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
-        style={{
-          width: '100%',
-          padding: '10px 12px',
-          borderRadius: '8px',
-          border: `1px solid ${isDark ? '#1a1a2e' : '#e2e8f0'}`,
-          background: isDark ? '#1a1a2e' : '#f7fafc',
-          color: isDark ? '#e2e8f0' : '#2d3748',
-          marginBottom: '16px',
-          outline: 'none',
-        }}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{ marginBottom: '16px', width: '100%' }}
       />
 
       {loading && (
-        <div style={{ color: isDark ? '#a2a2a2' : '#718096' }}>加载中...</div>
+        <div style={{ color: isDark ? '#a2a2a2' : '#718096' }}>
+          加载中...
+        </div>
       )}
 
-      {error && (
-        <div style={{ color: '#e94560' }}>{error}</div>
-      )}
+      {error && <div style={{ color: '#e94560' }}>{error}</div>}
 
       {!loading && !error && filteredList.length === 0 && (
         <div style={{ color: isDark ? '#a2a2a2' : '#718096' }}>
@@ -85,17 +80,25 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {filteredList.map(sub => (
+        {filteredList.map((sub) => (
           <div
             key={sub.id}
             onClick={() => onSelect(sub.id)}
             style={{
               padding: '12px',
               borderRadius: '8px',
-              background: selectedId === sub.id
-                ? '#e94560'
-                : isDark ? '#1a1a2e' : '#f7fafc',
-              color: selectedId === sub.id ? 'white' : isDark ? '#e2e8f0' : '#2d3748',
+              background:
+                selectedId === sub.id
+                  ? '#e94560'
+                  : isDark
+                    ? '#1a1a2e'
+                    : '#f7fafc',
+              color:
+                selectedId === sub.id
+                  ? 'white'
+                  : isDark
+                    ? '#e2e8f0'
+                    : '#2d3748',
               cursor: 'pointer',
               fontWeight: selectedId === sub.id ? 'bold' : 'normal',
               transition: 'all 0.2s',
