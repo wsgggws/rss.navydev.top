@@ -1,9 +1,16 @@
-import axios from "axios";
+import axios from 'axios'
 
-// 创建 Axios 实例
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 10000,
-});
+})
 
-export default api;
+api.interceptors.response.use(
+  response => response.data,
+  error => {
+    const message = error.response?.data?.detail || error.message || '请求失败'
+    return Promise.reject(new Error(message))
+  }
+)
+
+export default api

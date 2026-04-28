@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
+import Sidebar from '../components/Sidebar'
 import { useDarkMode } from '../hooks/useDarkMode'
 
 function Home() {
@@ -8,20 +9,13 @@ function Home() {
 
   return (
     <Layout isDark={isDark} onThemeToggle={toggleTheme}>
-      <div style={{
-        width: '240px',
-        background: isDark ? '#0f3460' : '#ffffff',
-        padding: '16px',
-        borderRight: '1px solid #0f3460',
-        minHeight: '100%',
-      }}>
-        <h2 style={{ color: isDark ? '#e94560' : '#667eea', marginBottom: '16px' }}>订阅源</h2>
-        <div style={{ color: isDark ? '#a2a2a2' : '#718096' }}>
-          {selectedRssId || '选择一个订阅源'}
-        </div>
-      </div>
+      <Sidebar
+        isDark={isDark}
+        selectedId={selectedRssId}
+        onSelect={setSelectedRssId}
+      />
       <div style={{ flex: 1, padding: '24px' }}>
-        文章列表区域
+        {selectedRssId ? `文章列表: ${selectedRssId}` : '选择一个订阅源'}
       </div>
     </Layout>
   )
