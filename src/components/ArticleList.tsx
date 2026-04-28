@@ -154,7 +154,7 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
       style={{
         maxWidth: '800px',
         width: '100%',
-        padding: '20px',
+        padding: '12px',
         margin: '0 auto',
       }}
     >

@@ -20,9 +20,9 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
   const sidebarContent = (
     <div
       style={{
-        width: '280px',
+        width: '320px',
         background: 'var(--bg-secondary)',
-        padding: '20px',
+        padding: '16px',
         borderRight: '1px solid var(--border-color)',
         minHeight: '100%',
         overflowY: 'auto',
@@ -103,7 +103,7 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
       <div
         className="hide-on-mobile"
         style={{
-          width: '280px',
+          width: '320px',
           flexShrink: 0,
         }}
       >
@@ -117,7 +117,7 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '280px',
+          width: '320px',
           height: '100vh',
           transform: isMobileOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.3s ease-in-out',

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Modal } from 'animal-island-ui'
 import { fetchArticleDetail, ArticleItem } from '../api/subscription'
 import DOMPurify from 'dompurify'
+import { marked } from 'marked'
 
 interface ArticleDrawerProps {
   rssId: string
@@ -113,16 +114,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
             }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
-                (displayArticle.summary_md || '')
-                  .replace(/^# .*/gm, '')
-                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                  .replace(
-                    /`([^`]+)`/g,
-                    '<code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;">$1</code>'
-                  )
-                  .replace(/\n\n/g, '</p><p>')
-                  .replace(/\n/g, '<br/>')
+                String(marked.parse(displayArticle.summary_md || '暂无内容'))
               ),
             }}
           />

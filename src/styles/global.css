@@ -12,8 +12,8 @@
   --accent-secondary: #667eea;
   --border-color: #e8eaf0;
   --shadow: rgba(0, 0, 0, 0.08);
-  --gradient-start: #667eea;
-  --gradient-end: #764ba2;
+  --gradient-start: #e94560;
+  --gradient-end: #ff6b8a;
 }
 
 [data-theme="dark"] {
@@ -26,8 +26,8 @@
   --accent-secondary: #0f3460;
   --border-color: #0f3460;
   --shadow: rgba(0, 0, 0, 0.3);
-  --gradient-start: #0f3460;
-  --gradient-end: #1a1a2e;
+  --gradient-start: #1a1a2e;
+  --gradient-end: #16213e;
 }
 
 * {

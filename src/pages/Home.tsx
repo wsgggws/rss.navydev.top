@@ -49,7 +49,7 @@ function Home() {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      <div style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
+      <div style={{ flex: 1, padding: '16px', overflowY: 'auto' }}>
         <ArticleList
           rssId={selectedRssId}
           onArticleClick={setSelectedArticle}
