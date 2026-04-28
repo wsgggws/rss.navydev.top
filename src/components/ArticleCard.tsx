@@ -61,20 +61,21 @@ function ArticleCard({ article, onClick }: ArticleCardProps) {
         >
           {article.title}
         </h3>
-        <p
-          style={{
-            color: 'var(--text-secondary)',
-            fontSize: '0.85rem',
-            marginBottom: '6px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            lineHeight: 1.5,
-          }}
-        >
-          {article.summary_md?.replace(/[#*`\[\]]/g, '').slice(0, 100) ||
-            'no summary'}
-        </p>
+        {article.summary_md && (
+          <p
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '0.85rem',
+              marginBottom: '6px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              lineHeight: 1.5,
+            }}
+          >
+            {article.summary_md.replace(/[#*`\[\]]/g, '').slice(0, 100)}
+          </p>
+        )}
         <div
           style={{
             color: 'var(--text-secondary)',

@@ -52,13 +52,12 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const displayArticle = detail || article
+  const displayArticle = detail
 
   return (
     <Modal
       open={!!article}
       onClose={onClose}
-      title="article"
       footer={null}
       width="60%"
       maskClosable
@@ -67,13 +66,13 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
     >
       <div ref={contentRef} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
         {loading && (
-          <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '40px' }}>
             loading...
           </div>
         )}
 
         {error && (
-          <div style={{ color: 'var(--text-primary)', textAlign: 'center' }}>
+          <div style={{ color: 'var(--text-primary)', textAlign: 'center', padding: '40px' }}>
             {error}
           </div>
         )}
