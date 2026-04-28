@@ -127,22 +127,34 @@ body {
   background: var(--bg-card) !important;
   color: var(--text-primary) !important;
   animation: none !important;
+  animation-duration: 0s !important;
   clip-path: none !important;
   padding: 24px 32px 32px !important;
+  opacity: 1 !important;
 }
 
-/* Disable modal zoom animation */
+/* Disable modal zoom and fade animations */
 @keyframes animal-animal-zoom-in-rD2Xb {
   from { opacity: 0; transform: scale(1); }
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes animal-animal-fade-in-1XsMr {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .article-drawer-modal .animal-mask-hAWeP {
   animation: none !important;
+  animation-duration: 0s !important;
+  opacity: 1 !important;
 }
 
 .article-drawer-modal.animal-modal-d0zyM {
   animation: none !important;
+  animation-duration: 0s !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .article-drawer-modal .animal-header-udOSi {
