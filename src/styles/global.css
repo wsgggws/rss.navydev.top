@@ -121,6 +121,65 @@ body {
   }
 }
 
+/* animal-island-ui Modal override for both light and dark mode */
+.article-drawer-modal.animal-modal-d0zyM,
+.article-drawer-modal .animal-modalClipped-7IuAw {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+.article-drawer-modal .animal-header-udOSi {
+  background: var(--bg-card) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+.article-drawer-modal .animal-title-s6pv3 {
+  color: var(--text-primary) !important;
+}
+
+.article-drawer-modal .animal-close-U6E4A {
+  color: var(--text-secondary) !important;
+}
+
+.article-drawer-modal .animal-body--aiyx {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+.article-drawer-modal .animal-footer-9Ib-a {
+  background: var(--bg-card) !important;
+}
+
+/* Search input dark mode fix (global for Sidebar) */
+[data-theme="dark"] .animal-wrapper-IRrhj {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .animal-input-12WUn {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .animal-input-12WUn::placeholder {
+  color: var(--text-secondary) !important;
+}
+
+/* Search input inside article drawer modal */
+.article-drawer-modal .animal-wrapper-IRrhj {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.article-drawer-modal .animal-input-12WUn {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.article-drawer-modal .animal-input-12WUn::placeholder {
+  color: var(--text-secondary) !important;
+}
+
 /* Markdown content styling */
 .article-content h1,
 .article-content h2,
