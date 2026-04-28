@@ -13,8 +13,41 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #16213e;
+  color: #e2e8f0;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light {
+  background: #f5f7fa;
+  color: #2d3748;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e94560;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d63d56;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
 }
