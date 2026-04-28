@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Card } from 'animal-island-ui'
 import { fetchArticles, ArticleItem } from '../api/subscription'
 import ArticleCard from './ArticleCard'
 
@@ -31,45 +32,138 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '200px',
-        color: isDark ? '#a2a2a2' : '#718096',
-      }}>
-        加载中...
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '300px',
+          padding: '40px',
+        }}
+      >
+        <div
+          style={{
+            fontSize: '2rem',
+            marginBottom: '16px',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }}
+        >
+          📖
+        </div>
+        <div
+          style={{
+            color: isDark ? '#a2a2a2' : '#718096',
+            fontSize: '1rem',
+          }}
+        >
+          加载文章中...
+        </div>
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div style={{
-        color: '#e94560',
-        padding: '20px',
-        textAlign: 'center',
-      }}>
-        {error}
-      </div>
+      <Card
+        style={{
+          textAlign: 'center',
+          padding: '40px',
+          marginTop: '20px',
+          background: isDark ? '#16213e' : '#ffffff',
+          border: `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+          borderRadius: '12px',
+        }}
+      >
+        <div style={{ fontSize: '2rem', marginBottom: '12px' }}>❌</div>
+        <div style={{ color: '#e94560', marginBottom: '16px' }}>{error}</div>
+        <button
+          onClick={fetchArticleList}
+          style={{
+            padding: '10px 24px',
+            background: '#e94560',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: '600',
+          }}
+        >
+          重试
+        </button>
+      </Card>
     )
   }
 
   if (articles.length === 0) {
     return (
-      <div style={{
-        color: isDark ? '#a2a2a2' : '#718096',
-        padding: '40px',
-        textAlign: 'center',
-      }}>
-        暂无文章
-      </div>
+      <Card
+        style={{
+          textAlign: 'center',
+          padding: '60px 40px',
+          marginTop: '20px',
+          background: isDark ? '#16213e' : '#ffffff',
+          border: `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+          borderRadius: '12px',
+        }}
+      >
+        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📭</div>
+        <div
+          style={{
+            color: isDark ? '#a2a2a2' : '#718096',
+            fontSize: '1.1rem',
+          }}
+        >
+          暂无文章
+        </div>
+        <div
+          style={{
+            color: isDark ? '#a2a2a2' : '#718096',
+            fontSize: '0.9rem',
+            marginTop: '8px',
+          }}
+        >
+          这个订阅源还没有文章
+        </div>
+      </Card>
     )
   }
 
   return (
-    <div style={{ maxWidth: '800px' }}>
-      {articles.map(article => (
+    <div style={{ maxWidth: '800px', padding: '20px' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+        }}
+      >
+        <h2
+          style={{
+            color: isDark ? '#e2e8f0' : '#1a1a2e',
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
+          }}
+        >
+          📰 文章列表
+        </h2>
+        <span
+          style={{
+            color: isDark ? '#a2a2a2' : '#718096',
+            fontSize: '0.85rem',
+          }}
+        >
+          共 {articles.length} 篇
+        </span>
+      </div>
+      {articles.map((article) => (
         <ArticleCard
           key={article.id}
           article={article}

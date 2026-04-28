@@ -7,16 +7,16 @@ export function useDarkMode() {
   })
 
   const toggleTheme = useCallback(() => {
-    setIsDark(prev => {
+    setIsDark((prev) => {
       const next = !prev
       localStorage.setItem('theme', next ? 'dark' : 'light')
-      document.body.classList.toggle('light', !next)
       return next
     })
   }, [])
 
   useEffect(() => {
-    document.body.classList.toggle('light', !isDark)
+    document.body.classList.toggle('dark-mode', isDark)
+    document.body.classList.toggle('light-mode', !isDark)
   }, [isDark])
 
   return { isDark, toggleTheme }
