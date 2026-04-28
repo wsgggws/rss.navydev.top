@@ -30,21 +30,6 @@ function Sidebar({ selectedId, onSelect, onShowAll, subscriptions, isMobileOpen,
         transition: 'background 0.3s ease, border-color 0.3s ease',
       }}
     >
-      <h2
-        style={{
-          color: 'var(--accent-primary)',
-          marginBottom: '16px',
-          fontSize: '1.2rem',
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
-        <span>📡</span>
-        <span>我的订阅</span>
-      </h2>
-
       <Input
         placeholder="搜索订阅..."
         value={searchQuery}
