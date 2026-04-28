@@ -208,3 +208,82 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Markdown content styling */
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  color: var(--text-primary);
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.article-content p {
+  margin-bottom: 1em;
+}
+
+.article-content code {
+  background: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.article-content pre {
+  background: var(--bg-secondary);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.article-content pre code {
+  background: none;
+  padding: 0;
+}
+
+.article-content a {
+  color: var(--accent-primary);
+}
+
+.article-content blockquote {
+  border-left: 4px solid var(--accent-primary);
+  margin-left: 0;
+  padding-left: 16px;
+  color: var(--text-secondary);
+}
+
+.article-content ul,
+.article-content ol {
+  margin-left: 24px;
+  margin-bottom: 1em;
+}
+
+.article-content li {
+  margin-bottom: 0.5em;
+}
+
+.article-content img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.article-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.article-content th,
+.article-content td {
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+}
+
+.article-content th {
+  background: var(--bg-secondary);
+}

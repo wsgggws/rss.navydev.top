@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Modal } from 'animal-island-ui'
 import { fetchArticleDetail, ArticleItem } from '../api/subscription'
 import DOMPurify from 'dompurify'
@@ -14,6 +14,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   const [detail, setDetail] = useState<ArticleItem | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!article) return
@@ -50,7 +51,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   }
 
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const displayArticle = detail || article
@@ -66,93 +67,111 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
       closable
       className="article-drawer-modal"
     >
-      {loading && (
-        <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-          加载中...
-        </div>
-      )}
-
-      {error && (
-        <div style={{ color: 'var(--accent-primary)', textAlign: 'center' }}>
-          {error}
-        </div>
-      )}
-
-      {!loading && !error && displayArticle && (
-        <>
-          <h1
-            style={{
-              color: 'var(--text-primary)',
-              fontSize: '1.8rem',
-              fontWeight: 'bold',
-              marginBottom: '16px',
-              lineHeight: 1.3,
-            }}
-          >
-            {displayArticle.title}
-          </h1>
-
-          <div
-            style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.9rem',
-              marginBottom: '24px',
-              display: 'flex',
-              gap: '16px',
-            }}
-          >
-            <span>📅 {formatDate(displayArticle.published_at)}</span>
-            {displayArticle.author && (
-              <span>✍️ {displayArticle.author}</span>
-            )}
+      <div ref={contentRef} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+        {loading && (
+          <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+            加载中...
           </div>
+        )}
 
-          <div
-            style={{
-              color: 'var(--text-primary)',
-              lineHeight: 1.8,
-            }}
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(
-                String(marked.parse(displayArticle.summary_md || '暂无内容'))
-              ),
-            }}
-          />
-          <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
-            <a
-              href={displayArticle?.link}
-              target="_blank"
-              rel="noopener noreferrer"
+        {error && (
+          <div style={{ color: 'var(--accent-primary)', textAlign: 'center' }}>
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && displayArticle && (
+          <>
+            <h1
               style={{
-                flex: 1,
-                padding: '12px',
-                background: 'var(--accent-primary)',
-                color: 'white',
-                textAlign: 'center',
-                borderRadius: '8px',
-                textDecoration: 'none',
+                color: 'var(--text-primary)',
+                fontSize: '1.8rem',
                 fontWeight: 'bold',
+                marginBottom: '16px',
+                lineHeight: 1.3,
               }}
             >
-              🔗 阅读原文
-            </a>
-            <button
-              onClick={scrollToTop}
+              {displayArticle.title}
+            </h1>
+
+            <div
               style={{
-                padding: '12px 24px',
-                background: 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
+                color: 'var(--text-secondary)',
+                fontSize: '0.9rem',
+                marginBottom: '24px',
+                display: 'flex',
+                gap: '16px',
+                flexWrap: 'wrap',
               }}
             >
-              ⬆️ 返回顶部
-            </button>
-          </div>
-        </>
-      )}
+              <span>📅 {formatDate(displayArticle.published_at)}</span>
+              {displayArticle.author && (
+                <span>✍️ {displayArticle.author}</span>
+              )}
+            </div>
+
+            <div
+              className="article-content"
+              style={{
+                color: 'var(--text-primary)',
+                lineHeight: 1.8,
+              }}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(
+                  String(marked.parse(displayArticle.summary_md || '暂无内容'))
+                ),
+              }}
+            />
+            <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
+              <a
+                href={displayArticle?.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  background: 'var(--accent-primary)',
+                  color: 'white',
+                  textAlign: 'center',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: 'bold',
+                }}
+              >
+                🔗 阅读原文
+              </a>
+              <button
+                onClick={scrollToTop}
+                style={{
+                  padding: '12px 24px',
+                  background: 'var(--accent-primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                }}
+              >
+                ⬆️
+              </button>
+              <button
+                onClick={onClose}
+                style={{
+                  padding: '12px 24px',
+                  background: 'var(--bg-secondary)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                }}
+              >
+                ✕ 关闭
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </Modal>
   )
 }
