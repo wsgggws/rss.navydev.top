@@ -14,7 +14,6 @@ function Home() {
   return (
     <Layout isDark={isDark} onThemeToggle={toggleTheme}>
       <Sidebar
-        isDark={isDark}
         selectedId={selectedRssId}
         onSelect={setSelectedRssId}
       />
@@ -22,27 +21,26 @@ function Home() {
         {selectedRssId ? (
           <ArticleList
             rssId={selectedRssId}
-            isDark={isDark}
             onArticleClick={setSelectedArticle}
           />
         ) : (
-          <div style={{
-            color: isDark ? '#a2a2a2' : '#718096',
-            textAlign: 'center',
-            marginTop: '40px',
-          }}>
+          <div
+            style={{
+              color: 'var(--text-secondary)',
+              textAlign: 'center',
+              marginTop: '40px',
+            }}
+          >
             选择一个订阅源查看文章
           </div>
         )}
       </div>
-    <ArticleDrawer
+      <ArticleDrawer
         rssId={selectedRssId || ''}
         article={selectedArticle}
-        isDark={isDark}
         onClose={() => setSelectedArticle(null)}
       />
 
-      {/* Overlay */}
       {selectedArticle && (
         <div
           onClick={() => setSelectedArticle(null)}

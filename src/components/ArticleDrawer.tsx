@@ -5,11 +5,10 @@ import { fetchArticleDetail, ArticleItem } from '../api/subscription'
 interface ArticleDrawerProps {
   rssId: string
   article: ArticleItem | null
-  isDark: boolean
   onClose: () => void
 }
 
-function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) {
+function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   const [detail, setDetail] = useState<ArticleItem | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -63,20 +62,22 @@ function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) 
       closable
     >
       {loading && (
-        <div style={{ textAlign: 'center', color: isDark ? '#a2a2a2' : '#718096' }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
           加载中...
         </div>
       )}
 
       {error && (
-        <div style={{ color: '#e94560', textAlign: 'center' }}>{error}</div>
+        <div style={{ color: 'var(--accent-primary)', textAlign: 'center' }}>
+          {error}
+        </div>
       )}
 
       {!loading && !error && displayArticle && (
         <>
           <h1
             style={{
-              color: isDark ? '#e2e8f0' : '#2d3748',
+              color: 'var(--text-primary)',
               fontSize: '1.8rem',
               fontWeight: 'bold',
               marginBottom: '16px',
@@ -88,7 +89,7 @@ function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) 
 
           <div
             style={{
-              color: isDark ? '#a2a2a2' : '#718096',
+              color: 'var(--text-secondary)',
               fontSize: '0.9rem',
               marginBottom: '24px',
               display: 'flex',
@@ -103,7 +104,7 @@ function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) 
 
           <div
             style={{
-              color: isDark ? '#e2e8f0' : '#2d3748',
+              color: 'var(--text-primary)',
               lineHeight: 1.8,
             }}
             dangerouslySetInnerHTML={{
@@ -113,7 +114,7 @@ function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) 
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(
                   /`([^`]+)`/g,
-                  '<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">$1</code>'
+                  '<code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;">$1</code>'
                 )
                 .replace(/\n\n/g, '</p><p>')
                 .replace(/\n/g, '<br/>'),
@@ -127,7 +128,7 @@ function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) 
               style={{
                 flex: 1,
                 padding: '12px',
-                background: '#e94560',
+                background: 'var(--accent-primary)',
                 color: 'white',
                 textAlign: 'center',
                 borderRadius: '8px',
@@ -141,7 +142,7 @@ function ArticleDrawer({ rssId, article, isDark, onClose }: ArticleDrawerProps) 
               onClick={scrollToTop}
               style={{
                 padding: '12px 24px',
-                background: isDark ? '#0f3460' : '#667eea',
+                background: 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',

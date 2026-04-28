@@ -3,7 +3,6 @@ import { ArticleItem } from '../api/subscription'
 
 interface ArticleCardProps {
   article: ArticleItem
-  isDark: boolean
   onClick: () => void
 }
 
@@ -16,34 +15,29 @@ function formatDate(dateString: string) {
   })
 }
 
-function ArticleCard({ article, isDark, onClick }: ArticleCardProps) {
+function ArticleCard({ article, onClick }: ArticleCardProps) {
   return (
     <Card
       type="default"
-      color={isDark ? 'default' : 'default'}
       onClick={onClick}
       style={{
         display: 'flex',
         gap: '16px',
         padding: '20px',
         marginBottom: '16px',
-        background: isDark ? '#16213e' : '#ffffff',
+        background: 'var(--bg-card)',
         borderRadius: '12px',
         cursor: 'pointer',
-        border: `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+        border: '1px solid var(--border-color)',
         transition: 'all 0.2s ease',
-        boxShadow: isDark
-          ? '0 4px 12px rgba(0,0,0,0.2)'
-          : '0 2px 8px rgba(0,0,0,0.08)',
+        boxShadow: '0 2px 8px var(--shadow)',
       }}
     >
       <div
         style={{
           width: '120px',
           height: '80px',
-          background: isDark
-            ? 'linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%)'
-            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)',
           borderRadius: '8px',
           display: 'flex',
           alignItems: 'center',
@@ -58,7 +52,7 @@ function ArticleCard({ article, isDark, onClick }: ArticleCardProps) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <h3
           style={{
-            color: isDark ? '#e2e8f0' : '#1a1a2e',
+            color: 'var(--text-primary)',
             marginBottom: '8px',
             fontSize: '1.1rem',
             fontWeight: 600,
@@ -71,7 +65,7 @@ function ArticleCard({ article, isDark, onClick }: ArticleCardProps) {
         </h3>
         <p
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             fontSize: '0.9rem',
             marginBottom: '8px',
             overflow: 'hidden',
@@ -85,7 +79,7 @@ function ArticleCard({ article, isDark, onClick }: ArticleCardProps) {
         </p>
         <div
           style={{
-            color: '#e94560',
+            color: 'var(--accent-primary)',
             fontSize: '0.8rem',
             display: 'flex',
             alignItems: 'center',
@@ -96,7 +90,7 @@ function ArticleCard({ article, isDark, onClick }: ArticleCardProps) {
           <span>{formatDate(article.published_at)}</span>
           {article.author && (
             <>
-              <span style={{ color: isDark ? '#0f3460' : '#e2e8f0' }}>|</span>
+              <span style={{ color: 'var(--text-secondary)' }}>|</span>
               <span>✍️</span>
               <span>{article.author}</span>
             </>

@@ -5,11 +5,10 @@ import ArticleCard from './ArticleCard'
 
 interface ArticleListProps {
   rssId: string
-  isDark: boolean
   onArticleClick: (article: ArticleItem) => void
 }
 
-function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
+function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
   const [articles, setArticles] = useState<ArticleItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -53,7 +52,7 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
         </div>
         <div
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             fontSize: '1rem',
           }}
         >
@@ -76,18 +75,22 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
           textAlign: 'center',
           padding: '40px',
           marginTop: '20px',
-          background: isDark ? '#16213e' : '#ffffff',
-          border: `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
           borderRadius: '12px',
         }}
       >
         <div style={{ fontSize: '2rem', marginBottom: '12px' }}>❌</div>
-        <div style={{ color: '#e94560', marginBottom: '16px' }}>{error}</div>
+        <div
+          style={{ color: 'var(--accent-primary)', marginBottom: '16px' }}
+        >
+          {error}
+        </div>
         <button
           onClick={fetchArticleList}
           style={{
             padding: '10px 24px',
-            background: '#e94560',
+            background: 'var(--accent-primary)',
             color: 'white',
             border: 'none',
             borderRadius: '8px',
@@ -108,15 +111,15 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
           textAlign: 'center',
           padding: '60px 40px',
           marginTop: '20px',
-          background: isDark ? '#16213e' : '#ffffff',
-          border: `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
           borderRadius: '12px',
         }}
       >
         <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📭</div>
         <div
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             fontSize: '1.1rem',
           }}
         >
@@ -124,7 +127,7 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
         </div>
         <div
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             fontSize: '0.9rem',
             marginTop: '8px',
           }}
@@ -147,7 +150,7 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
       >
         <h2
           style={{
-            color: isDark ? '#e2e8f0' : '#1a1a2e',
+            color: 'var(--text-primary)',
             fontSize: '1.2rem',
             fontWeight: 'bold',
           }}
@@ -156,7 +159,7 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
         </h2>
         <span
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             fontSize: '0.85rem',
           }}
         >
@@ -167,7 +170,6 @@ function ArticleList({ rssId, isDark, onArticleClick }: ArticleListProps) {
         <ArticleCard
           key={article.id}
           article={article}
-          isDark={isDark}
           onClick={() => onArticleClick(article)}
         />
       ))}

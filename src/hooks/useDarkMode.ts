@@ -15,8 +15,10 @@ export function useDarkMode() {
   }, [])
 
   useEffect(() => {
-    document.body.classList.toggle('dark-mode', isDark)
-    document.body.classList.toggle('light-mode', !isDark)
+    document.documentElement.setAttribute(
+      'data-theme',
+      isDark ? 'dark' : 'light'
+    )
   }, [isDark])
 
   return { isDark, toggleTheme }

@@ -14,14 +14,15 @@ function Header({ title, onThemeToggle, isDark }: HeaderProps) {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '16px 24px',
-        background: isDark ? '#1a1a2e' : '#ffffff',
-        borderBottom: `1px solid ${isDark ? '#0f3460' : '#e2e8f0'}`,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        background: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--border-color)',
+        boxShadow: '0 2px 8px var(--shadow)',
+        transition: 'background 0.3s ease, border-color 0.3s ease',
       }}
     >
       <h1
         style={{
-          color: '#e94560',
+          color: 'var(--accent-primary)',
           fontSize: '1.5rem',
           fontWeight: 'bold',
         }}
@@ -29,14 +30,22 @@ function Header({ title, onThemeToggle, isDark }: HeaderProps) {
         {title}
       </h1>
       {onThemeToggle && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ color: isDark ? '#a2a2a2' : '#718096', fontSize: '0.9rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+          }}
+        >
+          <span
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '0.9rem',
+            }}
+          >
             {isDark ? '🌙' : '☀️'}
           </span>
-          <Switch
-            checked={isDark}
-            onChange={onThemeToggle}
-          />
+          <Switch checked={isDark} onChange={onThemeToggle} />
         </div>
       )}
     </header>

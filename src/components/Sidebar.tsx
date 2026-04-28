@@ -3,12 +3,11 @@ import { Input, Card } from 'animal-island-ui'
 import { getAllSubscriptions, SubscriptionItem } from '../api/subscription'
 
 interface SidebarProps {
-  isDark: boolean
   selectedId: string | null
   onSelect: (id: string) => void
 }
 
-function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
+function Sidebar({ selectedId, onSelect }: SidebarProps) {
   const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -41,16 +40,17 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
     <div
       style={{
         width: '280px',
-        background: isDark ? '#16213e' : '#ffffff',
+        background: 'var(--bg-secondary)',
         padding: '20px',
-        borderRight: `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+        borderRight: '1px solid var(--border-color)',
         minHeight: '100%',
         overflowY: 'auto',
+        transition: 'background 0.3s ease, border-color 0.3s ease',
       }}
     >
       <h2
         style={{
-          color: '#e94560',
+          color: 'var(--accent-primary)',
           marginBottom: '16px',
           fontSize: '1.2rem',
           fontWeight: 'bold',
@@ -77,7 +77,7 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
       {loading && (
         <div
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             textAlign: 'center',
             padding: '20px',
           }}
@@ -89,7 +89,7 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
       {error && (
         <div
           style={{
-            color: '#e94560',
+            color: 'var(--accent-primary)',
             textAlign: 'center',
             padding: '20px',
           }}
@@ -101,7 +101,7 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
       {!loading && !error && filteredList.length === 0 && (
         <div
           style={{
-            color: isDark ? '#a2a2a2' : '#718096',
+            color: 'var(--text-secondary)',
             textAlign: 'center',
             padding: '40px 20px',
           }}
@@ -120,18 +120,14 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
               padding: '14px 16px',
               background:
                 selectedId === sub.id
-                  ? isDark
-                    ? 'linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%)'
-                    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                  : isDark
-                    ? '#1a1a2e'
-                    : '#f7fafc',
+                  ? 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)'
+                  : 'var(--bg-card)',
               borderRadius: '10px',
               cursor: 'pointer',
               border:
                 selectedId === sub.id
-                  ? '2px solid #e94560'
-                  : `1px solid ${isDark ? '#0f3460' : '#e8eaf0'}`,
+                  ? '2px solid var(--accent-primary)'
+                  : '1px solid var(--border-color)',
               transition: 'all 0.2s ease',
             }}
           >
@@ -140,9 +136,7 @@ function Sidebar({ isDark, selectedId, onSelect }: SidebarProps) {
                 color:
                   selectedId === sub.id
                     ? 'white'
-                    : isDark
-                      ? '#e2e8f0'
-                      : '#1a1a2e',
+                    : 'var(--text-primary)',
                 fontWeight: selectedId === sub.id ? 'bold' : '600',
                 fontSize: '0.95rem',
                 overflow: 'hidden',

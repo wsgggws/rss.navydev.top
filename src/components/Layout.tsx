@@ -10,12 +10,11 @@ interface LayoutProps {
 function Layout({ children, isDark, onThemeToggle }: LayoutProps) {
   return (
     <div
-      className={isDark ? 'dark-mode' : ''}
       style={{
         minHeight: '100vh',
-        background: isDark ? '#1a1a2e' : '#f5f7fa',
-        color: isDark ? '#e2e8f0' : '#1a1a2e',
-        transition: 'background 0.3s, color 0.3s',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
+        transition: 'background 0.3s ease, color 0.3s ease',
       }}
     >
       <Header
