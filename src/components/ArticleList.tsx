@@ -29,7 +29,7 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
       const data = await fetchArticles({ rssId, page: 1, pageSize: 100 })
       setArticles(data.items)
     } catch (err) {
-      setError(err instanceof Error ? err.message : '加载失败')
+      setError(err instanceof Error ? err.message : 'load failed')
     } finally {
       setLoading(false)
     }
@@ -58,31 +58,10 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
           justifyContent: 'center',
           minHeight: '300px',
           padding: '40px',
+          color: 'var(--text-secondary)',
         }}
       >
-        <div
-          style={{
-            fontSize: '2rem',
-            marginBottom: '16px',
-            animation: 'pulse 1.5s ease-in-out infinite',
-          }}
-        >
-          📖
-        </div>
-        <div
-          style={{
-            color: 'var(--text-secondary)',
-            fontSize: '1rem',
-          }}
-        >
-          加载文章中...
-        </div>
-        <style>{`
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-          }
-        `}</style>
+        loading...
       </div>
     )
   }
@@ -93,31 +72,25 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
         style={{
           textAlign: 'center',
           padding: '40px',
-          marginTop: '20px',
+          marginTop: '16px',
           background: 'var(--bg-card)',
           border: '1px solid var(--border-color)',
-          borderRadius: '12px',
         }}
       >
-        <div style={{ fontSize: '2rem', marginBottom: '12px' }}>❌</div>
-        <div
-          style={{ color: 'var(--accent-primary)', marginBottom: '16px' }}
-        >
+        <div style={{ color: 'var(--text-primary)', marginBottom: '16px' }}>
           {error}
         </div>
         <button
           onClick={fetchArticleList}
           style={{
-            padding: '10px 24px',
-            background: 'var(--accent-primary)',
-            color: 'white',
+            padding: '8px 16px',
+            background: 'var(--text-primary)',
+            color: 'var(--bg-primary)',
             border: 'none',
-            borderRadius: '8px',
             cursor: 'pointer',
-            fontWeight: '600',
           }}
         >
-          重试
+          retry
         </button>
       </Card>
     )
@@ -129,20 +102,18 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
         style={{
           textAlign: 'center',
           padding: '60px 40px',
-          marginTop: '20px',
+          marginTop: '16px',
           background: 'var(--bg-card)',
           border: '1px solid var(--border-color)',
-          borderRadius: '12px',
         }}
       >
-        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📭</div>
         <div
           style={{
             color: 'var(--text-secondary)',
-            fontSize: '1.1rem',
+            fontSize: '1rem',
           }}
         >
-          选择一个订阅源查看文章
+          select a subscription to view articles
         </div>
       </Card>
     )
@@ -158,20 +129,19 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
         margin: '0 auto',
       }}
     >
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '16px' }}>
         <input
           type="text"
-          placeholder="搜索文章标题或摘要..."
+          placeholder="search articles..."
           value={searchQuery}
           onChange={e => handleSearchChange(e.target.value)}
           style={{
             width: '100%',
-            padding: '12px 16px',
-            borderRadius: '8px',
+            padding: '10px 12px',
             border: '1px solid var(--border-color)',
             background: 'var(--bg-card)',
             color: 'var(--text-primary)',
-            fontSize: '0.95rem',
+            fontSize: '0.9rem',
             outline: 'none',
           }}
         />
@@ -182,26 +152,18 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '20px',
+          marginBottom: '16px',
         }}
       >
         <h2
           style={{
             color: 'var(--text-primary)',
-            fontSize: '1.2rem',
+            fontSize: '1rem',
             fontWeight: 'bold',
           }}
         >
-          📰 文章列表
+          articles ({filteredArticles.length})
         </h2>
-        <span
-          style={{
-            color: 'var(--text-secondary)',
-            fontSize: '0.85rem',
-          }}
-        >
-          共 {filteredArticles.length} 篇
-        </span>
       </div>
 
       {filteredArticles.length === 0 ? (
@@ -209,29 +171,18 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
           style={{
             textAlign: 'center',
             padding: '60px 40px',
-            marginTop: '20px',
+            marginTop: '16px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border-color)',
-            borderRadius: '12px',
           }}
         >
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📭</div>
           <div
             style={{
               color: 'var(--text-secondary)',
-              fontSize: '1.1rem',
+              fontSize: '1rem',
             }}
           >
-            暂无文章
-          </div>
-          <div
-            style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.9rem',
-              marginTop: '8px',
-            }}
-          >
-            {searchQuery ? '尝试调整搜索关键词' : '这个订阅源还没有文章'}
+            {searchQuery ? 'no match' : 'no articles'}
           </div>
         </Card>
       ) : (

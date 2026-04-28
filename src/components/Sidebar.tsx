@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Input, Card } from 'animal-island-ui'
+import { Input } from 'animal-island-ui'
 import { SubscriptionItem } from '../api/subscription'
 
 interface SidebarProps {
@@ -20,24 +20,22 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
   const sidebarContent = (
     <div
       style={{
-        width: '320px',
+        width: '240px',
         background: 'var(--bg-secondary)',
         padding: '16px',
         borderRight: '1px solid var(--border-color)',
         minHeight: '100%',
         overflowY: 'auto',
-        transition: 'background 0.3s ease, border-color 0.3s ease',
       }}
     >
       <Input
-        placeholder="搜索订阅..."
+        placeholder="search"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         style={{
-          marginBottom: '20px',
+          marginBottom: '16px',
           width: '100%',
         }}
-        size="large"
       />
 
       {filteredList.length === 0 && (
@@ -48,50 +46,31 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
             padding: '40px 20px',
           }}
         >
-          {searchQuery ? '🔍 没有找到匹配的订阅' : '📭 暂无订阅'}
+          {searchQuery ? 'no match' : 'no subscriptions'}
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {filteredList.map((sub) => (
-          <Card
+          <div
             key={sub.id}
-            type="default"
             onClick={() => {
               onSelect(sub.id)
               if (onMobileClose) onMobileClose()
             }}
             style={{
-              padding: '14px 16px',
-              background:
-                selectedId === sub.id
-                  ? 'linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)'
-                  : 'var(--bg-card)',
-              borderRadius: '10px',
+              padding: '12px',
+              background: selectedId === sub.id ? 'var(--bg-card)' : 'transparent',
+              border: selectedId === sub.id ? '1px solid var(--border-color)' : '1px solid transparent',
               cursor: 'pointer',
-              border:
-                selectedId === sub.id
-                  ? '2px solid var(--accent-primary)'
-                  : '1px solid var(--border-color)',
-              transition: 'all 0.2s ease',
+              fontSize: '0.9rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           >
-            <div
-              style={{
-                color:
-                  selectedId === sub.id
-                    ? 'white'
-                    : 'var(--text-primary)',
-                fontWeight: selectedId === sub.id ? 'bold' : '600',
-                fontSize: '0.95rem',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {sub.title}
-            </div>
-          </Card>
+            {sub.title}
+          </div>
         ))}
       </div>
     </div>
@@ -99,30 +78,27 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
 
   return (
     <>
-      {/* Desktop sidebar - always visible */}
       <div
         className="hide-on-mobile"
         style={{
-          width: '320px',
+          width: '240px',
           flexShrink: 0,
         }}
       >
         {sidebarContent}
       </div>
 
-      {/* Mobile drawer - custom implementation */}
       <div
         className="mobile-drawer"
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '320px',
+          width: '240px',
           height: '100vh',
           transform: isMobileOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.3s ease-in-out',
+          transition: 'transform 0.2s ease-in-out',
           zIndex: 999,
-          boxShadow: isMobileOpen ? '4px 0 20px rgba(0,0,0,0.15)' : 'none',
         }}
       >
         {sidebarContent}

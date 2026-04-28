@@ -20,7 +20,7 @@ function Layout({ children, isDark, onThemeToggle, sidebarOpen, onSidebarToggle 
       }}
     >
       <Header
-        title="📡 RSS Reader"
+        title="RSS Reader"
         isDark={isDark}
         onThemeToggle={onThemeToggle}
         onMenuToggle={onSidebarToggle}

@@ -27,7 +27,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
         const data = await fetchArticleDetail(rssId, articleId)
         if (!cancelled) setDetail(data)
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : '加载失败')
+        if (!cancelled) setError(err instanceof Error ? err.message : 'load failed')
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -43,10 +43,8 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
     const date = new Date(dateString)
     return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
     })
   }
 
@@ -60,7 +58,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
     <Modal
       open={!!article}
       onClose={onClose}
-      title="文章详情"
+      title="article"
       footer={null}
       width="60%"
       maskClosable
@@ -70,12 +68,12 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
       <div ref={contentRef} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
         {loading && (
           <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-            加载中...
+            loading...
           </div>
         )}
 
         {error && (
-          <div style={{ color: 'var(--accent-primary)', textAlign: 'center' }}>
+          <div style={{ color: 'var(--text-primary)', textAlign: 'center' }}>
             {error}
           </div>
         )}
@@ -85,9 +83,9 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
             <h1
               style={{
                 color: 'var(--text-primary)',
-                fontSize: '1.8rem',
+                fontSize: '1.4rem',
                 fontWeight: 'bold',
-                marginBottom: '16px',
+                marginBottom: '12px',
                 lineHeight: 1.3,
               }}
             >
@@ -97,16 +95,16 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
             <div
               style={{
                 color: 'var(--text-secondary)',
-                fontSize: '0.9rem',
-                marginBottom: '24px',
+                fontSize: '0.85rem',
+                marginBottom: '16px',
                 display: 'flex',
-                gap: '16px',
+                gap: '12px',
                 flexWrap: 'wrap',
               }}
             >
-              <span>📅 {formatDate(displayArticle.published_at)}</span>
+              <span>{formatDate(displayArticle.published_at)}</span>
               {displayArticle.author && (
-                <span>✍️ {displayArticle.author}</span>
+                <span>{displayArticle.author}</span>
               )}
             </div>
 
@@ -114,59 +112,53 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
               className="article-content"
               style={{
                 color: 'var(--text-primary)',
-                lineHeight: 1.8,
+                lineHeight: 1.6,
               }}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
-                  String(marked.parse(displayArticle.summary_md || '暂无内容'))
+                  String(marked.parse(displayArticle.summary_md || 'no content'))
                 ),
               }}
             />
-            <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
+            <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
               <a
                 href={displayArticle?.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   flex: 1,
-                  padding: '12px',
-                  background: 'var(--accent-primary)',
-                  color: 'white',
+                  padding: '10px',
+                  background: 'var(--text-primary)',
+                  color: 'var(--bg-primary)',
                   textAlign: 'center',
-                  borderRadius: '8px',
                   textDecoration: 'none',
-                  fontWeight: 'bold',
                 }}
               >
-                🔗 阅读原文
+                read original
               </a>
               <button
                 onClick={scrollToTop}
                 style={{
-                  padding: '12px 24px',
-                  background: 'var(--accent-primary)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  background: 'var(--bg-secondary)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-color)',
                   cursor: 'pointer',
-                  fontWeight: 'bold',
                 }}
               >
-                ⬆️
+                top
               </button>
               <button
                 onClick={onClose}
                 style={{
-                  padding: '12px 24px',
+                  padding: '10px 16px',
                   background: 'var(--bg-secondary)',
                   color: 'var(--text-primary)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: '8px',
                   cursor: 'pointer',
-                  fontWeight: 'bold',
                 }}
               >
-                ✕ 关闭
+                close
               </button>
             </div>
           </>

@@ -15,11 +15,9 @@ function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: Hea
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '16px 24px',
+        padding: '12px 16px',
         background: 'var(--bg-secondary)',
         borderBottom: '1px solid var(--border-color)',
-        boxShadow: '0 2px 8px var(--shadow)',
-        transition: 'background 0.3s ease, border-color 0.3s ease',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -30,22 +28,19 @@ function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: Hea
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              fontSize: '1.5rem',
+              fontSize: '1.2rem',
               padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               color: 'var(--text-primary)',
             }}
             aria-label="Toggle menu"
           >
-            {sidebarOpen ? '✕' : '☰'}
+            {sidebarOpen ? '[x]' : '[=]'}
           </button>
         )}
         <h1
           style={{
-            color: 'var(--accent-primary)',
-            fontSize: '1.5rem',
+            color: 'var(--text-primary)',
+            fontSize: '1.2rem',
             fontWeight: 'bold',
           }}
         >
@@ -57,16 +52,16 @@ function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: Hea
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
+            gap: '8px',
           }}
         >
           <span
             style={{
               color: 'var(--text-secondary)',
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
             }}
           >
-            {isDark ? '🌙' : '☀️'}
+            {isDark ? 'dark' : 'light'}
           </span>
           <Switch checked={isDark} onChange={onThemeToggle} />
         </div>
