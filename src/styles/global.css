@@ -100,36 +100,42 @@ body {
   }
 }
 
-/* Article drawer fullscreen on mobile */
+/* Article drawer floating modal */
 .article-drawer-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-card);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  overflow-y: auto;
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .article-drawer-modal > div {
-  max-width: 1000px;
+  max-width: 700px;
   width: 100%;
-  padding: 24px 48px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 24px 32px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
   .article-drawer-modal {
-    width: 100% !important;
-    max-width: 100% !important;
-    inset: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    padding: 0;
+    align-items: flex-end;
   }
 
   .article-drawer-modal > div {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 12px 12px 0 0;
     padding: 16px;
   }
 }

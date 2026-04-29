@@ -135,7 +135,7 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
     <div
       className="article-list-container"
       style={{
-        maxWidth: '800px',
+        maxWidth: '1200px',
         width: '100%',
         padding: '12px',
         margin: '0 auto',
