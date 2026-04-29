@@ -19,8 +19,7 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
       setHtmlContent('')
       return
     }
-    const summaryMd = article.summary_md
-    const result = marked.parse(summaryMd)
+    const result = marked.parse(article.summary_md)
     if (typeof result === 'string') {
       setHtmlContent(DOMPurify.sanitize(result))
     } else {
@@ -28,7 +27,7 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
         setHtmlContent(DOMPurify.sanitize(String(html)))
       })
     }
-  }, [article?.id])
+  }, [article?.summary_md])
 
   function formatDate(dateString: string) {
     if (!dateString) return ''

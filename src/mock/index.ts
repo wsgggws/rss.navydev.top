@@ -61,13 +61,4 @@ export default [
       }
     },
   } as MockMethod,
-  {
-    url: '/api/v1/rss/subscriptions/:rssId/articles/:articleId',
-    method: 'get',
-    response: (options: { params?: { articleId?: string } }) => {
-      const article = articles.find(a => a.id === options.params?.articleId)
-      if (!article) return { status: 404, message: 'Not found' }
-      return article
-    },
-  } as MockMethod,
 ] as MockMethod[]
