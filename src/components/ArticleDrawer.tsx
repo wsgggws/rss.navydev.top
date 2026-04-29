@@ -15,6 +15,14 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [onClose])
+
+  useEffect(() => {
     if (!article) return
 
     const articleId = article.id
@@ -67,8 +75,8 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   }
 
   return (
-    <div className="article-drawer-modal">
-      <div ref={contentRef} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+    <div className="article-drawer-modal" onClick={onClose}>
+      <div ref={contentRef} style={{ maxHeight: '100vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
         <>
           <div
             style={{
