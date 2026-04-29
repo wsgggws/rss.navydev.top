@@ -1,33 +1,55 @@
 import { useRef, useState, useEffect } from 'react'
-import { ArticleItem } from '../api/subscription'
+import { ArticleItem, fetchArticleDetail } from '../api/subscription'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
 interface ArticleDrawerProps {
+  rssId: string
   article: ArticleItem | null
   onClose: () => void
 }
 
-function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
+function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [htmlContent, setHtmlContent] = useState('')
-
-  if (!article) return null
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!article?.summary_md) {
-      setHtmlContent('')
-      return
+    if (!article) return
+
+    const articleId = article.id
+    const summaryMd = article.summary_md
+
+    setLoading(true)
+    setHtmlContent('')
+
+    async function loadContent() {
+      try {
+        let content = summaryMd
+        if (!content) {
+          const detail = await fetchArticleDetail(rssId, articleId)
+          content = detail.summary_md
+        }
+        if (content) {
+          const result = marked.parse(content)
+          if (typeof result === 'string') {
+            setHtmlContent(DOMPurify.sanitize(result))
+          } else {
+            result.then(html => {
+              setHtmlContent(DOMPurify.sanitize(String(html)))
+            })
+          }
+        }
+      } catch (err) {
+        setHtmlContent('<p>Failed to load article</p>')
+      } finally {
+        setLoading(false)
+      }
     }
-    const result = marked.parse(article.summary_md)
-    if (typeof result === 'string') {
-      setHtmlContent(DOMPurify.sanitize(result))
-    } else {
-      result.then(html => {
-        setHtmlContent(DOMPurify.sanitize(String(html)))
-      })
-    }
-  }, [article?.summary_md])
+    loadContent()
+  }, [rssId, article?.id, article?.summary_md])
+
+  if (!article) return null
 
   function formatDate(dateString: string) {
     if (!dateString) return ''
@@ -64,16 +86,20 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
             )}
           </div>
 
-          <div
-            className="article-content"
-            style={{
-              color: 'var(--text-primary)',
-              lineHeight: 1.6,
-            }}
-            dangerouslySetInnerHTML={{
-              __html: htmlContent,
-            }}
-          />
+          {loading && <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>loading...</div>}
+
+          {!loading && htmlContent && (
+            <div
+              className="article-content"
+              style={{
+                color: 'var(--text-primary)',
+                lineHeight: 1.6,
+              }}
+              dangerouslySetInnerHTML={{
+                __html: htmlContent,
+              }}
+            />
+          )}
           <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
             <a
               href={article.link}
