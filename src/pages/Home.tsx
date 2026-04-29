@@ -14,8 +14,7 @@ function Home() {
   const [subscriptions, setSubscriptions] = useState<any[]>([])
 
   useEffect(() => {
-    const isMobile = window.innerWidth <= 768
-    setSidebarOpen(!isMobile)
+    setSidebarOpen(true)
   }, [])
 
   useEffect(() => {
