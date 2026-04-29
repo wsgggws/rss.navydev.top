@@ -14,6 +14,11 @@ function Home() {
   const [subscriptions, setSubscriptions] = useState<any[]>([])
 
   useEffect(() => {
+    const isMobile = window.innerWidth <= 768
+    setSidebarOpen(!isMobile)
+  }, [])
+
+  useEffect(() => {
     fetchSubscriptions()
   }, [])
 
@@ -40,8 +45,8 @@ function Home() {
         selectedId={selectedRssId}
         onSelect={setSelectedRssId}
         subscriptions={subscriptions}
+        isOpen={sidebarOpen}
         isMobileOpen={sidebarOpen}
-        onMobileClose={() => setSidebarOpen(false)}
       />
       {sidebarOpen && (
         <div
@@ -55,11 +60,12 @@ function Home() {
           onArticleClick={setSelectedArticle}
         />
       </div>
-      <ArticleDrawer
-        rssId={selectedRssId}
-        article={selectedArticle}
-        onClose={() => setSelectedArticle(null)}
-      />
+      {selectedArticle && (
+        <ArticleDrawer
+          article={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+        />
+      )}
     </Layout>
   )
 }

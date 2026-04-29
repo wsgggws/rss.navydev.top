@@ -1,46 +1,22 @@
-import { useEffect, useState, useRef } from 'react'
-import { Modal } from 'animal-island-ui'
-import { fetchArticleDetail, ArticleItem } from '../api/subscription'
+import { useRef } from 'react'
+import { ArticleItem } from '../api/subscription'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
 interface ArticleDrawerProps {
-  rssId: string
   article: ArticleItem | null
   onClose: () => void
 }
 
-function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
-  const [detail, setDetail] = useState<ArticleItem | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
   const contentRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!article) return
-
-    const articleId = article.id
-    let cancelled = false
-    async function loadDetail() {
-      try {
-        setLoading(true)
-        const data = await fetchArticleDetail(rssId, articleId)
-        if (!cancelled) setDetail(data)
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'load failed')
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    loadDetail()
-    return () => { cancelled = true }
-  }, [article?.id, rssId])
 
   if (!article) return null
 
   function formatDate(dateString: string) {
+    if (!dateString) return ''
     const date = new Date(dateString)
+    if (isNaN(date.getTime())) return ''
     return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'short',
@@ -49,121 +25,85 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
   }
 
   function scrollToTop() {
-    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    contentRef.current?.scrollTo({ top: 0, behavior: 'auto' })
   }
 
-  const displayArticle = detail
-
   return (
-    <Modal
-      open={!!article}
-      onClose={onClose}
-      footer={null}
-      width="60%"
-      maskClosable
-      closable
-      className="article-drawer-modal"
-    >
-      <div ref={contentRef} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-        {loading && (
-          <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '40px' }}>
-            loading...
+    <div className="article-drawer-modal">
+      <div ref={contentRef} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+        <>
+          <div
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '0.85rem',
+              marginBottom: '16px',
+              display: 'flex',
+              gap: '12px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <span>{formatDate(article.published_at)}</span>
+            {article.author && (
+              <span>{article.author}</span>
+            )}
           </div>
-        )}
 
-        {error && (
-          <div style={{ color: 'var(--text-primary)', textAlign: 'center', padding: '40px' }}>
-            {error}
-          </div>
-        )}
-
-        {!loading && !error && displayArticle && (
-          <>
-            <h1
+          <div
+            className="article-content"
+            style={{
+              color: 'var(--text-primary)',
+              lineHeight: 1.6,
+            }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(
+                String(marked.parse(article.summary_md || ''))
+              ),
+            }}
+          />
+          <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
-                color: 'var(--text-primary)',
-                fontSize: '1.4rem',
-                fontWeight: 'bold',
-                marginBottom: '12px',
-                lineHeight: 1.3,
+                flex: 1,
+                padding: '10px',
+                background: 'var(--text-primary)',
+                color: 'var(--bg-primary)',
+                textAlign: 'center',
+                textDecoration: 'none',
               }}
             >
-              {displayArticle.title}
-            </h1>
-
-            <div
+              → read original
+            </a>
+            <button
+              onClick={scrollToTop}
               style={{
-                color: 'var(--text-secondary)',
-                fontSize: '0.85rem',
-                marginBottom: '16px',
-                display: 'flex',
-                gap: '12px',
-                flexWrap: 'wrap',
+                padding: '10px 16px',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-color)',
+                cursor: 'pointer',
               }}
             >
-              <span>{formatDate(displayArticle.published_at)}</span>
-              {displayArticle.author && (
-                <span>{displayArticle.author}</span>
-              )}
-            </div>
-
-            <div
-              className="article-content"
+              ↑ top
+            </button>
+            <button
+              onClick={onClose}
               style={{
+                padding: '10px 16px',
+                background: 'var(--bg-secondary)',
                 color: 'var(--text-primary)',
-                lineHeight: 1.6,
+                border: '1px solid var(--border-color)',
+                cursor: 'pointer',
               }}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  String(marked.parse(displayArticle.summary_md || ''))
-                ),
-              }}
-            />
-            <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
-              <a
-                href={displayArticle?.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  background: 'var(--text-primary)',
-                  color: 'var(--bg-primary)',
-                  textAlign: 'center',
-                  textDecoration: 'none',
-                }}
-              >
-                read original
-              </a>
-              <button
-                onClick={scrollToTop}
-                style={{
-                  padding: '10px 16px',
-                  background: 'var(--bg-secondary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                }}
-              >
-                top
-              </button>
-              <button
-                onClick={onClose}
-                style={{
-                  padding: '10px 16px',
-                  background: 'var(--bg-secondary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                }}
-              >
-                close
-              </button>
-            </div>
-          </>
-        )}
+            >
+              × close
+            </button>
+          </div>
+        </>
       </div>
-    </Modal>
+    </div>
   )
 }
 

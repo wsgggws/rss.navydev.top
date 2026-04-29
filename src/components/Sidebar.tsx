@@ -5,11 +5,11 @@ interface SidebarProps {
   selectedId: string
   onSelect: (id: string) => void
   subscriptions: SubscriptionItem[]
+  isOpen?: boolean
   isMobileOpen?: boolean
-  onMobileClose?: () => void
 }
 
-function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileClose }: SidebarProps) {
+function Sidebar({ selectedId, onSelect, subscriptions, isOpen, isMobileOpen }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredList = subscriptions.filter((sub) =>
@@ -19,7 +19,7 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
   const sidebarContent = (
     <div
       style={{
-        width: '240px',
+        width: '320px',
         background: 'var(--bg-secondary)',
         padding: '16px',
         borderRight: '1px solid var(--border-color)',
@@ -63,7 +63,6 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
             key={sub.id}
             onClick={() => {
               onSelect(sub.id)
-              if (onMobileClose) onMobileClose()
             }}
             style={{
               padding: '12px',
@@ -88,8 +87,9 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
       <div
         className="hide-on-mobile"
         style={{
-          width: '240px',
+          width: '320px',
           flexShrink: 0,
+          display: isOpen ? 'block' : 'none',
         }}
       >
         {sidebarContent}
@@ -101,7 +101,7 @@ function Sidebar({ selectedId, onSelect, subscriptions, isMobileOpen, onMobileCl
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '240px',
+          width: '320px',
           height: '100vh',
           transform: isMobileOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.2s ease-in-out',

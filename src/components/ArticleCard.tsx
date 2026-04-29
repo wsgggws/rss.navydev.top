@@ -1,4 +1,3 @@
-import { Card } from 'animal-island-ui'
 import { ArticleItem } from '../api/subscription'
 
 interface ArticleCardProps {
@@ -17,8 +16,7 @@ function formatDate(dateString: string) {
 
 function ArticleCard({ article, onClick }: ArticleCardProps) {
   return (
-    <Card
-      type="default"
+    <div
       onClick={onClick}
       className="article-card"
       style={{
@@ -94,7 +92,7 @@ function ArticleCard({ article, onClick }: ArticleCardProps) {
           )}
         </div>
       </div>
-    </Card>
+    </div>
   )
 }
 

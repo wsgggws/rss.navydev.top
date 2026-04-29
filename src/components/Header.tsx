@@ -1,5 +1,3 @@
-import { Switch } from 'animal-island-ui'
-
 interface HeaderProps {
   title: string
   onThemeToggle?: () => void
@@ -63,7 +61,39 @@ function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: Hea
           >
             {isDark ? 'dark' : 'light'}
           </span>
-          <Switch checked={isDark} onChange={onThemeToggle} />
+          <label style={{ position: 'relative', display: 'inline-block', width: '40px', height: '20px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={isDark}
+              onChange={onThemeToggle}
+              style={{ opacity: 0, width: 0, height: 0 }}
+            />
+            <span
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: isDark ? 'var(--text-primary)' : 'var(--border-color)',
+                borderRadius: '10px',
+                transition: 'background 0.2s',
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: isDark ? '22px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  background: isDark ? 'var(--bg-card)' : 'var(--text-secondary)',
+                  borderRadius: '50%',
+                  transition: 'left 0.2s',
+                }}
+              />
+            </span>
+          </label>
         </div>
       )}
     </header>

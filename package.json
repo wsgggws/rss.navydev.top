@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "animal-island-ui": "^0.7.4",
     "axios": "^1.7.4",
     "dompurify": "^3.4.1",
     "marked": "^18.0.2",
@@ -25,6 +24,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.4.1",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-mock": "^3.0.2"
   }
 }
