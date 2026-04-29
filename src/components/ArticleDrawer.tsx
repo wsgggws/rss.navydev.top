@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { ArticleItem } from '../api/subscription'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
@@ -10,8 +10,25 @@ interface ArticleDrawerProps {
 
 function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
   const contentRef = useRef<HTMLDivElement>(null)
+  const [htmlContent, setHtmlContent] = useState('')
 
   if (!article) return null
+
+  useEffect(() => {
+    if (!article?.summary_md) {
+      setHtmlContent('')
+      return
+    }
+    const summaryMd = article.summary_md
+    const result = marked.parse(summaryMd)
+    if (typeof result === 'string') {
+      setHtmlContent(DOMPurify.sanitize(result))
+    } else {
+      result.then(html => {
+        setHtmlContent(DOMPurify.sanitize(String(html)))
+      })
+    }
+  }, [article?.id])
 
   function formatDate(dateString: string) {
     if (!dateString) return ''
@@ -55,9 +72,7 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
               lineHeight: 1.6,
             }}
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(
-                String(marked.parse(article.summary_md || ''))
-              ),
+              __html: htmlContent,
             }}
           />
           <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
