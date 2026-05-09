@@ -129,7 +129,6 @@ function Home() {
       </div>
       {selectedArticle && (
         <ArticleDrawer
-          rssId={selectedRssId}
           article={selectedArticle}
           onClose={() => setSelectedArticle(null)}
         />

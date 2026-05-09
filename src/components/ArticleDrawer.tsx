@@ -4,12 +4,11 @@ import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
 interface ArticleDrawerProps {
-  rssId: string
   article: ArticleItem | null
   onClose: () => void
 }
 
-function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
+function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [htmlContent, setHtmlContent] = useState('')
   const [loading, setLoading] = useState(false)
@@ -26,6 +25,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
     if (!article) return
 
     const articleId = article.id
+    const rssId = article.rss_id || ''
     const summaryMd = article.summary_md
 
     setLoading(true)
@@ -34,7 +34,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
     async function loadContent() {
       try {
         let content = summaryMd
-        if (!content) {
+        if (!content && rssId) {
           const detail = await fetchArticleDetail(rssId, articleId)
           content = detail.summary_md
         }
@@ -55,7 +55,7 @@ function ArticleDrawer({ rssId, article, onClose }: ArticleDrawerProps) {
       }
     }
     loadContent()
-  }, [rssId, article?.id, article?.summary_md])
+  }, [article?.id, article?.rss_id, article?.summary_md])
 
   if (!article) return null
 
