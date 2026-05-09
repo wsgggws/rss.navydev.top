@@ -3,6 +3,7 @@ import { ArticleItem } from '../api/subscription'
 interface ArticleCardProps {
   article: ArticleItem
   onClick: () => void
+  isRead?: boolean
 }
 
 function formatDate(dateString: string) {
@@ -14,7 +15,7 @@ function formatDate(dateString: string) {
   })
 }
 
-function ArticleCard({ article, onClick }: ArticleCardProps) {
+function ArticleCard({ article, onClick, isRead }: ArticleCardProps) {
   return (
     <div
       onClick={onClick}
@@ -43,7 +44,7 @@ function ArticleCard({ article, onClick }: ArticleCardProps) {
           flexShrink: 0,
         }}
       >
-        R
+        {isRead ? '\u{1F4D6}' : '\u{1F4D5}'}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <h3

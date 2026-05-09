@@ -4,9 +4,12 @@ interface HeaderProps {
   isDark?: boolean
   onMenuToggle?: () => void
   sidebarOpen?: boolean
+  onHistoryToggle?: () => void
+  showHistory?: boolean
+  historyCount?: number
 }
 
-function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: HeaderProps) {
+function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen, onHistoryToggle, showHistory, historyCount }: HeaderProps) {
   return (
     <header
       style={{
@@ -45,57 +48,74 @@ function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen }: Hea
           {title}
         </h1>
       </div>
-      {onThemeToggle && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          <span
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {onHistoryToggle && (
+          <button
+            onClick={onHistoryToggle}
             style={{
-              color: 'var(--text-secondary)',
+              background: showHistory ? 'var(--text-primary)' : 'transparent',
+              color: showHistory ? 'var(--bg-primary)' : 'var(--text-primary)',
+              border: '1px solid var(--border-color)',
+              cursor: 'pointer',
+              padding: '6px 12px',
               fontSize: '0.85rem',
             }}
           >
-            {isDark ? 'dark' : 'light'}
-          </span>
-          <label style={{ position: 'relative', display: 'inline-block', width: '40px', height: '20px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={isDark}
-              onChange={onThemeToggle}
-              style={{ opacity: 0, width: 0, height: 0 }}
-            />
+            history {historyCount !== undefined && historyCount > 0 ? `(${historyCount})` : ''}
+          </button>
+        )}
+        {onThemeToggle && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
             <span
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: isDark ? 'var(--text-primary)' : 'var(--border-color)',
-                borderRadius: '10px',
-                transition: 'background 0.2s',
+                color: 'var(--text-secondary)',
+                fontSize: '0.85rem',
               }}
             >
+              {isDark ? 'dark' : 'light'}
+            </span>
+            <label style={{ position: 'relative', display: 'inline-block', width: '40px', height: '20px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={isDark}
+                onChange={onThemeToggle}
+                style={{ opacity: 0, width: 0, height: 0 }}
+              />
               <span
                 style={{
                   position: 'absolute',
-                  top: '2px',
-                  left: isDark ? '22px' : '2px',
-                  width: '16px',
-                  height: '16px',
-                  background: isDark ? 'var(--bg-card)' : 'var(--text-secondary)',
-                  borderRadius: '50%',
-                  transition: 'left 0.2s',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: isDark ? 'var(--text-primary)' : 'var(--border-color)',
+                  borderRadius: '10px',
+                  transition: 'background 0.2s',
                 }}
-              />
-            </span>
-          </label>
-        </div>
-      )}
+              >
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '2px',
+                    left: isDark ? '22px' : '2px',
+                    width: '16px',
+                    height: '16px',
+                    background: isDark ? 'var(--bg-card)' : 'var(--text-secondary)',
+                    borderRadius: '50%',
+                    transition: 'left 0.2s',
+                  }}
+                />
+              </span>
+            </label>
+          </div>
+        )}
+      </div>
     </header>
   )
 }

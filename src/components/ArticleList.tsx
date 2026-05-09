@@ -5,16 +5,21 @@ import ArticleCard from './ArticleCard'
 interface ArticleListProps {
   rssId: string
   onArticleClick: (article: ArticleItem) => void
+  readIds: string[]
 }
 
 const PAGE_SIZE = 10
 
-function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
+function ArticleList({ rssId, onArticleClick, readIds }: ArticleListProps) {
   const [articles, setArticles] = useState<ArticleItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [rssId])
 
   useEffect(() => {
     fetchArticleList()
@@ -196,6 +201,7 @@ function ArticleList({ rssId, onArticleClick }: ArticleListProps) {
               key={article.id}
               article={article}
               onClick={() => onArticleClick(article)}
+              isRead={readIds.includes(article.id)}
             />
           ))}
           {totalPages > 1 && (
