@@ -6,9 +6,10 @@ import { marked } from 'marked'
 interface ArticleDrawerProps {
   article: ArticleItem | null
   onClose: () => void
+  rssId?: string
 }
 
-function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
+function ArticleDrawer({ article, onClose, rssId: rssIdProp }: ArticleDrawerProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [htmlContent, setHtmlContent] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,7 +26,7 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
     if (!article) return
 
     const articleId = article.id
-    const rssId = article.rss_id || ''
+    const rssId = rssIdProp || article.rss_id || ''
     const summaryMd = article.summary_md
 
     setLoading(true)
@@ -39,14 +40,14 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
           content = detail.summary_md
         }
         if (content) {
-          const result = marked.parse(content)
-          if (typeof result === 'string') {
-            setHtmlContent(DOMPurify.sanitize(result))
-          } else {
-            result.then(html => {
-              setHtmlContent(DOMPurify.sanitize(String(html)))
-            })
+          try {
+            const result = await marked.parse(content)
+            setHtmlContent(DOMPurify.sanitize(String(result)))
+          } catch {
+            setHtmlContent('<p>Failed to parse content</p>')
           }
+        } else {
+          setHtmlContent('<p>No content available</p>')
         }
       } catch (err) {
         setHtmlContent('<p>Failed to load article</p>')
@@ -55,7 +56,7 @@ function ArticleDrawer({ article, onClose }: ArticleDrawerProps) {
       }
     }
     loadContent()
-  }, [article?.id, article?.rss_id, article?.summary_md])
+  }, [article?.id, article?.rss_id, article?.summary_md, rssIdProp])
 
   if (!article) return null
 
