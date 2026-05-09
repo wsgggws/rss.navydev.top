@@ -5,9 +5,10 @@ interface HistoryPanelProps {
   articles: ArticleItem[]
   onClose: () => void
   onArticleClick: (article: ArticleItem) => void
+  visitCounts: Record<string, number>
 }
 
-function HistoryPanel({ articles, onClose, onArticleClick }: HistoryPanelProps) {
+function HistoryPanel({ articles, onClose, onArticleClick, visitCounts }: HistoryPanelProps) {
   return (
     <div
       style={{
@@ -74,6 +75,7 @@ function HistoryPanel({ articles, onClose, onArticleClick }: HistoryPanelProps) 
             article={article}
             onClick={() => onArticleClick(article)}
             isRead={true}
+            visitCount={visitCounts[article.id] || 0}
           />
         ))
       )}

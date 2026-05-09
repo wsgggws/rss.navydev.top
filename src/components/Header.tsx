@@ -7,9 +7,10 @@ interface HeaderProps {
   onHistoryToggle?: () => void
   showHistory?: boolean
   historyCount?: number
+  totalVisits?: number
 }
 
-function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen, onHistoryToggle, showHistory, historyCount }: HeaderProps) {
+function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen, onHistoryToggle, showHistory, historyCount, totalVisits }: HeaderProps) {
   return (
     <header
       style={{
@@ -49,6 +50,11 @@ function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen, onHis
         </h1>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {totalVisits !== undefined && totalVisits > 0 && (
+          <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+            {totalVisits.toLocaleString()} visits
+          </span>
+        )}
         {onHistoryToggle && (
           <button
             onClick={onHistoryToggle}

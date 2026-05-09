@@ -7,12 +7,20 @@ interface ArticleDrawerProps {
   article: ArticleItem | null
   onClose: () => void
   rssId?: string
+  onViewCountUpdate?: (articleId: string, count: number) => void
 }
 
-function ArticleDrawer({ article, onClose, rssId: rssIdProp }: ArticleDrawerProps) {
+function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }: ArticleDrawerProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [htmlContent, setHtmlContent] = useState('')
   const [loading, setLoading] = useState(false)
+  const [viewCount, setViewCount] = useState<number>(article?.view_count || 0)
+
+  useEffect(() => {
+    if (article?.view_count !== undefined) {
+      setViewCount(article.view_count)
+    }
+  }, [article?.view_count])
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -38,6 +46,18 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp }: ArticleDrawerProp
         if (!content && rssId) {
           const detail = await fetchArticleDetail(rssId, articleId)
           content = detail.summary_md
+          setViewCount(detail.view_count || 0)
+          onViewCountUpdate?.(articleId, detail.view_count || 0)
+        } else if (rssId) {
+          // Always fetch to increment view count
+          try {
+            const detail = await fetchArticleDetail(rssId, articleId)
+            if (detail.summary_md) content = detail.summary_md
+            setViewCount(detail.view_count || 0)
+            onViewCountUpdate?.(articleId, detail.view_count || 0)
+          } catch {
+            // fallback to local content
+          }
         }
         if (content) {
           try {
@@ -93,6 +113,8 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp }: ArticleDrawerProp
             {article.author && (
               <span>{article.author}</span>
             )}
+            <span>|</span>
+            <span>{viewCount} views</span>
           </div>
 
           {loading && <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>loading...</div>}

@@ -5,7 +5,16 @@ import ArticleList from '../components/ArticleList'
 import ArticleDrawer from '../components/ArticleDrawer'
 import HistoryPanel from '../components/HistoryPanel'
 import { useDarkMode } from '../hooks/useDarkMode'
-import { ArticleItem, getAllSubscriptions } from '../api/subscription'
+import { ArticleItem, getAllSubscriptions, trackVisit } from '../api/subscription'
+
+type VisitCounts = Record<string, number>
+
+function loadVisitCounts(): VisitCounts {
+  try {
+    const stored = localStorage.getItem('visitCounts')
+    return stored ? JSON.parse(stored) : {}
+  } catch { return {} }
+}
 
 type ReadIdsMap = Record<string, string[]>
 
@@ -14,12 +23,6 @@ function loadReadIds(): ReadIdsMap {
     const stored = localStorage.getItem('readIds')
     return stored ? JSON.parse(stored) : {}
   } catch { return {} }
-}
-
-function saveReadIds(map: ReadIdsMap) {
-  try {
-    localStorage.setItem('readIds', JSON.stringify(map))
-  } catch {}
 }
 
 function Home() {
@@ -36,9 +39,23 @@ function Home() {
     } catch { return [] }
   })
   const [readIdsMap, setReadIdsMap] = useState<ReadIdsMap>(loadReadIds)
+  const [visitCounts, setVisitCounts] = useState<VisitCounts>(loadVisitCounts)
+  const [totalVisits, setTotalVisits] = useState<number>(0)
 
   useEffect(() => {
-    saveReadIds(readIdsMap)
+    trackVisit().then(res => setTotalVisits(res.total_visits)).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('visitCounts', JSON.stringify(visitCounts))
+    } catch {}
+  }, [visitCounts])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('readIds', JSON.stringify(readIdsMap))
+    } catch {}
   }, [readIdsMap])
 
   useEffect(() => {
@@ -82,6 +99,13 @@ function Home() {
     })
   }
 
+  const handleVisit = (articleId: string) => {
+    setVisitCounts(prev => ({
+      ...prev,
+      [articleId]: (prev[articleId] || 0) + 1,
+    }))
+  }
+
   return (
     <Layout
       isDark={isDark}
@@ -91,6 +115,7 @@ function Home() {
       onHistoryToggle={() => setShowHistory(!showHistory)}
       showHistory={showHistory}
       historyCount={historyArticles.length}
+      totalVisits={totalVisits}
     >
       <Sidebar
         selectedId={selectedRssId}
@@ -113,17 +138,23 @@ function Home() {
           <HistoryPanel
             articles={historyArticles}
             onClose={() => setShowHistory(false)}
-            onArticleClick={setSelectedArticle}
+            onArticleClick={(article) => {
+              handleVisit(article.id)
+              setSelectedArticle(article)
+            }}
+            visitCounts={visitCounts}
           />
         ) : (
           <ArticleList
             rssId={selectedRssId}
             onArticleClick={(article) => {
+              handleVisit(article.id)
               handleMarkRead(article.id)
               handleArticleRead(article)
               setSelectedArticle(article)
             }}
             readIds={readIdsMap[selectedRssId] || []}
+            visitCounts={visitCounts}
           />
         )}
       </div>
@@ -132,6 +163,9 @@ function Home() {
           article={selectedArticle}
           rssId={selectedRssId}
           onClose={() => setSelectedArticle(null)}
+          onViewCountUpdate={(articleId, count) => {
+            setVisitCounts(prev => ({ ...prev, [articleId]: count }))
+          }}
         />
       )}
     </Layout>

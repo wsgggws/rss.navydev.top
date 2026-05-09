@@ -10,9 +10,10 @@ interface LayoutProps {
   onHistoryToggle?: () => void
   showHistory?: boolean
   historyCount?: number
+  totalVisits?: number
 }
 
-function Layout({ children, isDark, onThemeToggle, sidebarOpen, onSidebarToggle, onHistoryToggle, showHistory, historyCount }: LayoutProps) {
+function Layout({ children, isDark, onThemeToggle, sidebarOpen, onSidebarToggle, onHistoryToggle, showHistory, historyCount, totalVisits }: LayoutProps) {
   return (
     <div
       style={{
@@ -31,6 +32,7 @@ function Layout({ children, isDark, onThemeToggle, sidebarOpen, onSidebarToggle,
         onHistoryToggle={onHistoryToggle}
         showHistory={showHistory}
         historyCount={historyCount}
+        totalVisits={totalVisits}
       />
       <main
         style={{

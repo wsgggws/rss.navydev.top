@@ -4,6 +4,7 @@ interface ArticleCardProps {
   article: ArticleItem
   onClick: () => void
   isRead?: boolean
+  visitCount?: number
 }
 
 function formatDate(dateString: string) {
@@ -15,7 +16,7 @@ function formatDate(dateString: string) {
   })
 }
 
-function ArticleCard({ article, onClick, isRead }: ArticleCardProps) {
+function ArticleCard({ article, onClick, isRead, visitCount }: ArticleCardProps) {
   return (
     <div
       onClick={onClick}
@@ -89,6 +90,12 @@ function ArticleCard({ article, onClick, isRead }: ArticleCardProps) {
             <>
               <span>|</span>
               <span>{article.author}</span>
+            </>
+          )}
+          {visitCount !== undefined && visitCount > 0 && (
+            <>
+              <span>|</span>
+              <span>{visitCount} views</span>
             </>
           )}
         </div>

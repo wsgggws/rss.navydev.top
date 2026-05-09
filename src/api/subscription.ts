@@ -21,6 +21,7 @@ export interface ArticleItem {
   title: string
   author?: string
   rss_id?: string
+  view_count?: number
 }
 
 export interface ArticleListResponse {
@@ -77,4 +78,12 @@ export async function fetchAllArticles(params?: {
   return api.get('/api/v1/rss/articles', {
     params: { limit: pageSize, offset },
   })
+}
+
+export async function trackVisit(): Promise<{ total_visits: number }> {
+  return api.post('/api/v1/visit/track')
+}
+
+export async function getVisitCount(): Promise<{ total_visits: number }> {
+  return api.get('/api/v1/visit/count')
 }

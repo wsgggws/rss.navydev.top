@@ -6,11 +6,12 @@ interface ArticleListProps {
   rssId: string
   onArticleClick: (article: ArticleItem) => void
   readIds: string[]
+  visitCounts: Record<string, number>
 }
 
 const PAGE_SIZE = 10
 
-function ArticleList({ rssId, onArticleClick, readIds }: ArticleListProps) {
+function ArticleList({ rssId, onArticleClick, readIds, visitCounts }: ArticleListProps) {
   const [articles, setArticles] = useState<ArticleItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -202,6 +203,7 @@ function ArticleList({ rssId, onArticleClick, readIds }: ArticleListProps) {
               article={article}
               onClick={() => onArticleClick(article)}
               isRead={readIds.includes(article.id)}
+              visitCount={visitCounts[article.id] || 0}
             />
           ))}
           {totalPages > 1 && (
