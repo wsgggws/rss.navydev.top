@@ -26,7 +26,7 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp }: ArticleDrawerProp
     if (!article) return
 
     const articleId = article.id
-    const rssId = rssIdProp || article.rss_id || ''
+    const rssId = article.rss_id || rssIdProp || ''
     const summaryMd = article.summary_md
 
     setLoading(true)
