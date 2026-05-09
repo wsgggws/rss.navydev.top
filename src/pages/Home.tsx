@@ -70,7 +70,7 @@ function Home() {
   const handleArticleRead = (article: ArticleItem) => {
     setHistoryArticles(prev => {
       if (prev.some(a => a.id === article.id)) return prev
-      return [article, ...prev]
+      return [{ ...article, rss_id: article.rss_id || selectedRssId }, ...prev]
     })
   }
 
