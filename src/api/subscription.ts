@@ -22,6 +22,7 @@ export interface ArticleItem {
   author?: string
   rss_id?: string
   view_count?: number
+  image_url?: string
 }
 
 export interface ArticleListResponse {

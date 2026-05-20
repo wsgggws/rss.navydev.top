@@ -15,12 +15,16 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
   const [htmlContent, setHtmlContent] = useState('')
   const [loading, setLoading] = useState(false)
   const [viewCount, setViewCount] = useState<number>(article?.view_count || 0)
+  const [imageUrl, setImageUrl] = useState<string | undefined>(article?.image_url)
 
   useEffect(() => {
     if (article?.view_count !== undefined) {
       setViewCount(article.view_count)
     }
-  }, [article?.view_count])
+    if (article?.image_url) {
+      setImageUrl(article.image_url)
+    }
+  }, [article?.view_count, article?.image_url])
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -43,17 +47,22 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
     async function loadContent() {
       try {
         let content = summaryMd
+        let imgUrl = article.image_url
         if (!content && rssId) {
           const detail = await fetchArticleDetail(rssId, articleId)
           content = detail.summary_md
+          imgUrl = imgUrl || detail.image_url
           setViewCount(detail.view_count || 0)
+          setImageUrl(imgUrl || detail.image_url)
           onViewCountUpdate?.(articleId, detail.view_count || 0)
         } else if (rssId) {
           // Always fetch to increment view count
           try {
             const detail = await fetchArticleDetail(rssId, articleId)
             if (detail.summary_md) content = detail.summary_md
+            imgUrl = imgUrl || detail.image_url
             setViewCount(detail.view_count || 0)
+            setImageUrl(imgUrl || detail.image_url)
             onViewCountUpdate?.(articleId, detail.view_count || 0)
           } catch {
             // fallback to local content
@@ -117,6 +126,20 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
             <span>{viewCount} views</span>
           </div>
 
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt=""
+              style={{
+                width: '100%',
+                maxHeight: '300px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                marginBottom: '16px',
+              }}
+            />
+          )}
+
           {loading && <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>loading...</div>}
 
           {!loading && htmlContent && (
@@ -132,17 +155,30 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
             />
           )}
           <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={onClose}
               style={{
                 flex: 1,
                 padding: '10px',
                 background: 'var(--text-primary)',
                 color: 'var(--bg-primary)',
+                border: '1px solid var(--border-color)',
+                cursor: 'pointer',
+              }}
+            >
+              × close
+            </button>
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: '10px 16px',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)',
                 textAlign: 'center',
                 textDecoration: 'none',
+                border: '1px solid var(--border-color)',
               }}
             >
               → read original
@@ -158,18 +194,6 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
               }}
             >
               ↑ top
-            </button>
-            <button
-              onClick={onClose}
-              style={{
-                padding: '10px 16px',
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-color)',
-                cursor: 'pointer',
-              }}
-            >
-              × close
             </button>
           </div>
         </>

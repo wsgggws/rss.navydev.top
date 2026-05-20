@@ -43,9 +43,21 @@ function ArticleCard({ article, onClick, isRead, visitCount }: ArticleCardProps)
           color: 'var(--text-secondary)',
           fontSize: '1.5rem',
           flexShrink: 0,
+          overflow: 'hidden',
+          borderRadius: '4px',
         }}
       >
-        {isRead ? '\u{1F4D6}' : '\u{1F4D5}'}
+        {article.image_url ? (
+          <img
+            src={article.image_url}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : isRead ? (
+          '\u{1F4D6}'
+        ) : (
+          '\u{1F4D5}'
+        )}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <h3
