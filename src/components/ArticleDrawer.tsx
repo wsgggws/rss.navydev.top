@@ -40,6 +40,7 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
     const articleId = article.id
     const rssId = article.rss_id || rssIdProp || ''
     const summaryMd = article.summary_md
+    const imgUrlFromProps = article.image_url
 
     setLoading(true)
     setHtmlContent('')
@@ -47,7 +48,7 @@ function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }
     async function loadContent() {
       try {
         let content = summaryMd
-        let imgUrl = article.image_url
+        let imgUrl = imgUrlFromProps
         if (!content && rssId) {
           const detail = await fetchArticleDetail(rssId, articleId)
           content = detail.summary_md
