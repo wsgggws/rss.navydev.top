@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArticleItem, getAllSubscriptions, SubscriptionItem, trackVisit } from '../api/subscription'
-import ArticleDrawer from '../components/ArticleDrawer'
+import { ArticleItem, fetchArticleDetail, getAllSubscriptions, SubscriptionItem, trackVisit } from '../api/subscription'
 import ArticleList from '../components/ArticleList'
 import HistoryPanel from '../components/HistoryPanel'
 import Layout from '../components/Layout'
@@ -30,7 +29,6 @@ function persistLocalValue(key: string, value: unknown) {
 function Home() {
   const { isDark, toggleTheme } = useDarkMode()
   const [selectedRssId, setSelectedRssId] = useState('')
-  const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(() => !window.matchMedia('(max-width: 768px)').matches)
   const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([])
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
@@ -77,15 +75,30 @@ function Home() {
   }, [])
 
   function openArticle(article: ArticleItem, rssId = selectedRssId) {
+    const resolvedRssId = article.rss_id || rssId
     const optimisticViewCount = (visitCounts[article.id] || article.view_count || 0) + 1
     const enrichedArticle = {
       ...article,
-      rss_id: article.rss_id || rssId,
+      rss_id: resolvedRssId,
       view_count: optimisticViewCount,
     }
     setVisitCounts(current => ({ ...current, [article.id]: optimisticViewCount }))
     setHistoryArticles(current => [enrichedArticle, ...current.filter(item => item.id !== article.id)].slice(0, 100))
-    setSelectedArticle(enrichedArticle)
+
+    if (resolvedRssId) {
+      void fetchArticleDetail(resolvedRssId, article.id)
+        .then(detail => {
+          const confirmedCount = detail.view_count || optimisticViewCount
+          setVisitCounts(current => ({
+            ...current,
+            [article.id]: Math.max(current[article.id] || 0, confirmedCount),
+          }))
+          setHistoryArticles(current => current.map(item => item.id === article.id
+            ? { ...item, view_count: Math.max(item.view_count || 0, confirmedCount) }
+            : item))
+        })
+        .catch(() => undefined)
+    }
   }
 
   function markArticleRead(articleId: string) {
@@ -153,14 +166,6 @@ function Home() {
         )}
       </div>
 
-      {selectedArticle && (
-        <ArticleDrawer
-          article={selectedArticle}
-          rssId={selectedArticle.rss_id || selectedRssId}
-          onClose={() => setSelectedArticle(null)}
-          onViewCountUpdate={(articleId, count) => setVisitCounts(current => ({ ...current, [articleId]: count }))}
-        />
-      )}
     </Layout>
   )
 }

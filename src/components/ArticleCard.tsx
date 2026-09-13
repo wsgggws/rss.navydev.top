@@ -21,11 +21,13 @@ function ArticleCard({ article, onClick, isRead = false, visitCount = 0 }: Artic
   useEffect(() => setImageFailed(false), [article.image_url])
 
   return (
-    <button
-      type="button"
+    <a
+      href={article.link}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={onClick}
       className={`article-card ${isRead ? 'is-read' : 'is-unread'}`}
-      aria-label={`阅读：${article.title}`}
+      aria-label={`在新标签页阅读：${article.title}`}
     >
       <span className="article-card-body">
         <span className="article-title-row">
@@ -39,7 +41,7 @@ function ArticleCard({ article, onClick, isRead = false, visitCount = 0 }: Artic
           <span><Clock3 size={14} />{formatArticleDate(article.published_at, { relative: true })}</span>
           {article.author && <span><UserRound size={14} />{article.author}</span>}
           {visitCount > 0 && <span><Eye size={14} />{visitCount.toLocaleString()} 次阅读</span>}
-          <span className="read-more">阅读全文 <ArrowUpRight size={14} /></span>
+          <span className="read-more">打开原文 <ArrowUpRight size={14} /></span>
         </span>
       </span>
 
@@ -50,7 +52,7 @@ function ArticleCard({ article, onClick, isRead = false, visitCount = 0 }: Artic
           <FileText size={24} />
         )}
       </span>
-    </button>
+    </a>
   )
 }
 
