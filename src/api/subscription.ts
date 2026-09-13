@@ -17,8 +17,8 @@ export interface ArticleItem {
   id: string
   link: string
   published_at?: string | null
-  summary_md?: string
   title: string
+  description?: string
   author?: string
   rss_id?: string
   view_count?: number

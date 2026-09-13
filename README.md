@@ -1,6 +1,6 @@
 # RSS NAVY
 
-一个专注于阅读体验的轻量 RSS 阅读器。前端完全使用 React、TypeScript 和 Vite 构建，对接独立的 FastAPI 后端获取订阅源、文章和 AI 摘要。
+一个专注于阅读体验的轻量 RSS 阅读器。前端完全使用 React、TypeScript 和 Vite 构建，对接独立的 FastAPI 后端获取订阅源，并在站内直接加载文章原始 URL。
 
 - 线上地址：<https://rss.navydev.top/>
 - 后端仓库：<https://github.com/wsgggws/api.rss.navydev.top>
@@ -10,7 +10,7 @@
 - 浏览并搜索 RSS 订阅源
 - 搜索当前订阅中的文章
 - 按全部或未读状态筛选文章
-- 在应用内阅读 Markdown 摘要
+- 在应用内直接浏览原始文章页面
 - 跳转阅读原文
 - 在浏览器本地保存阅读状态和最近阅读记录
 - 自动过滤无效的 `1970` 占位日期
@@ -26,7 +26,7 @@
 | 构建 | Vite 6 |
 | 路由 | React Router 6 |
 | 请求 | Axios |
-| 内容渲染 | Marked、DOMPurify |
+| 原文展示 | 浏览器 iframe |
 | 图标 | Lucide React |
 | 测试 | Vitest |
 
@@ -88,7 +88,7 @@ npm run preview
 | --- | --- | --- |
 | `GET` | `/api/v1/rss/subscriptions` | 获取订阅源列表 |
 | `GET` | `/api/v1/rss/subscriptions/{rss_id}/articles` | 获取订阅源文章列表 |
-| `GET` | `/api/v1/rss/subscriptions/{rss_id}/articles/{article_id}` | 获取文章 AI 摘要并记录阅读次数 |
+| `GET` | `/api/v1/rss/subscriptions/{rss_id}/articles/{article_id}` | 获取文章元数据并记录阅读次数 |
 | `POST` | `/api/v1/visit/track` | 记录站点访问 |
 
 接口字段和服务端运行方式以对应的后端仓库 README 为准。
@@ -106,7 +106,7 @@ npm run build
 
 ## 数据说明
 
-未读状态、主题偏好和最近阅读记录保存在浏览器 `localStorage` 中，不会跨浏览器或跨设备同步。文章内容、阅读次数和 AI 摘要由后端管理。
+未读状态、主题偏好和最近阅读记录保存在浏览器 `localStorage` 中，不会跨浏览器或跨设备同步。后端只管理文章元数据和阅读次数，前端使用文章 `link` 在 iframe 中直接加载来源页面。部分网站会通过 `X-Frame-Options` 或 CSP 禁止被嵌入，此时可使用详情底部的“阅读原文”在新标签页打开。
 
 ## License
 

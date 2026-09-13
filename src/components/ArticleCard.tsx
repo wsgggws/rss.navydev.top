@@ -10,17 +10,13 @@ interface ArticleCardProps {
   visitCount?: number
 }
 
-function cleanSummary(value?: string) {
-  return value
-    ?.replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    .replace(/[#*`>\[\]]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
+function cleanDescription(value?: string) {
+  return value?.replace(/\s+/g, ' ').trim()
 }
 
 function ArticleCard({ article, onClick, isRead = false, visitCount = 0 }: ArticleCardProps) {
   const [imageFailed, setImageFailed] = useState(false)
-  const summary = cleanSummary(article.summary_md)
+  const description = cleanDescription(article.description)
 
   useEffect(() => setImageFailed(false), [article.image_url])
 
@@ -37,7 +33,7 @@ function ArticleCard({ article, onClick, isRead = false, visitCount = 0 }: Artic
           <span className="article-card-title">{article.title}</span>
         </span>
 
-        {summary && <span className="article-summary">{summary}</span>}
+        {description && <span className="article-description">{description}</span>}
 
         <span className="article-meta">
           <span><Clock3 size={14} />{formatArticleDate(article.published_at, { relative: true })}</span>

@@ -62,7 +62,7 @@ function ArticleList({ rssId, feedTitle, onArticleClick, readIds, visitCounts }:
       if (readFilter === 'unread' && readIds.includes(article.id)) return false
       if (!query) return true
       return article.title.toLocaleLowerCase().includes(query)
-        || article.summary_md?.toLocaleLowerCase().includes(query)
+        || article.description?.toLocaleLowerCase().includes(query)
     })
   }, [articles, readFilter, readIds, searchQuery])
 

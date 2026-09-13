@@ -1,39 +1,21 @@
 import { MockMethod } from 'vite-plugin-mock'
 
 const subscriptions = [
-  { id: '1', url: 'https://example.com/feed1', title: 'Tech News' },
-  { id: '2', url: 'https://example.com/feed2', title: 'AI Research' },
-  { id: '3', url: 'https://example.com/feed3', title: 'Design Weekly' },
+  { id: '1', url: 'https://example.com/feed1', title: '技术周刊' },
+  { id: '2', url: 'https://example.com/feed2', title: '独立开发' },
+  { id: '3', url: 'https://example.com/feed3', title: '设计札记' },
 ]
+
+const topics = ['React 新特性', '独立产品开发', '现代 CSS 实践', 'TypeScript 最佳实践', 'Web 性能优化']
 
 const articles = Array.from({ length: 95 }, (_, i) => ({
   id: `article-${i + 1}`,
   link: `https://example.com/article/${i + 1}`,
   published_at: new Date(Date.now() - i * 86400000).toISOString(),
-  title: `Article ${i + 1}: ${['React 19 New Features', 'Building AI Apps', 'Modern CSS Tips', 'TypeScript Best Practices', 'Web Performance Guide'][i % 5]}`,
-  author: ['John Doe', 'Jane Smith', 'Alex Chen', 'Sarah Johnson'][i % 4],
+  title: `文章 ${i + 1}：${topics[i % topics.length]}`,
+  description: `来自订阅源的内容预览：本文讨论${topics[i % topics.length]}，包含实践方法和具体示例。`,
+  author: ['林舟', '陈默', 'Alex Chen', '周宁'][i % 4],
   rss_id: String((i % 3) + 1),
-  summary_md: `# Article ${i + 1} Title
-
-This is the summary content for article ${i + 1}. It contains important information that readers will find valuable.
-
-## Key Points
-
-- Point one about this topic
-- Point two discussing the details
-- Point three with more insights
-
-## Conclusion
-
-In conclusion, this article covers the essential aspects of ${['React 19', 'AI Development', 'CSS Architecture', 'TypeScript', 'Performance'][i % 5]} that every developer should know.
-
-\`\`\`javascript
-console.log('Example code block ${i + 1}');
-\`\`\`
-
-> Important quote from the original article.
-
-More detailed explanation follows here with multiple paragraphs of content to simulate real article length.`,
 }))
 
 export default [
