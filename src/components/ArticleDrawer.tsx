@@ -1,7 +1,9 @@
-import { useRef, useState, useEffect } from 'react'
-import { ArticleItem, fetchArticleDetail } from '../api/subscription'
 import DOMPurify from 'dompurify'
+import { ArrowUp, Clock3, ExternalLink, Eye, LoaderCircle, UserRound, X } from 'lucide-react'
 import { marked } from 'marked'
+import { useEffect, useRef, useState } from 'react'
+import { ArticleItem, fetchArticleDetail } from '../api/subscription'
+import { formatArticleDate } from '../utils/date'
 
 interface ArticleDrawerProps {
   article: ArticleItem | null
@@ -10,194 +12,144 @@ interface ArticleDrawerProps {
   onViewCountUpdate?: (articleId: string, count: number) => void
 }
 
+function removeRepeatedArticleTitle(html: string, articleTitle: string) {
+  const parsed = new DOMParser().parseFromString(html, 'text/html')
+  const firstElement = parsed.body.firstElementChild
+  const normalizeText = (value: string | null) => value?.replace(/\s+/g, ' ').trim().toLocaleLowerCase()
+
+  if (
+    firstElement
+    && ['H1', 'H2'].includes(firstElement.tagName)
+    && normalizeText(firstElement.textContent) === normalizeText(articleTitle)
+  ) {
+    firstElement.remove()
+  }
+
+  return parsed.body.innerHTML
+}
+
 function ArticleDrawer({ article, onClose, rssId: rssIdProp, onViewCountUpdate }: ArticleDrawerProps) {
-  const contentRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
   const [htmlContent, setHtmlContent] = useState('')
   const [loading, setLoading] = useState(false)
-  const [viewCount, setViewCount] = useState<number>(article?.view_count || 0)
-  const [imageUrl, setImageUrl] = useState<string | undefined>(article?.image_url)
+  const [viewCount, setViewCount] = useState(article?.view_count || 0)
+  const [imageUrl, setImageUrl] = useState<string | null | undefined>(article?.image_url)
+  const [imageFailed, setImageFailed] = useState(false)
 
   useEffect(() => {
-    if (article?.view_count !== undefined) {
-      setViewCount(article.view_count)
-    }
-    if (article?.image_url) {
-      setImageUrl(article.image_url)
-    }
-  }, [article?.view_count, article?.image_url])
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = previousOverflow }
+  }, [])
 
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onClose()
     }
-    document.addEventListener('keydown', handleEsc)
-    return () => document.removeEventListener('keydown', handleEsc)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
 
   useEffect(() => {
     if (!article) return
-
+    let active = true
     const articleId = article.id
+    const articleTitle = article.title
     const rssId = article.rss_id || rssIdProp || ''
-    const summaryMd = article.summary_md
-    const imgUrlFromProps = article.image_url
 
+    setViewCount(article.view_count || 0)
+    setImageUrl(article.image_url)
+    setImageFailed(false)
     setLoading(true)
     setHtmlContent('')
 
     async function loadContent() {
       try {
-        let content = summaryMd
-        let imgUrl = imgUrlFromProps
-        if (!content && rssId) {
-          const detail = await fetchArticleDetail(rssId, articleId)
-          content = detail.summary_md
-          imgUrl = imgUrl || detail.image_url
-          setViewCount(detail.view_count || 0)
-          setImageUrl(imgUrl || detail.image_url)
-          onViewCountUpdate?.(articleId, detail.view_count || 0)
-        } else if (rssId) {
-          // Always fetch to increment view count
+        let content = article?.summary_md
+        let nextImageUrl = article?.image_url
+
+        if (rssId) {
           try {
             const detail = await fetchArticleDetail(rssId, articleId)
-            if (detail.summary_md) content = detail.summary_md
-            imgUrl = imgUrl || detail.image_url
-            setViewCount(detail.view_count || 0)
-            setImageUrl(imgUrl || detail.image_url)
-            onViewCountUpdate?.(articleId, detail.view_count || 0)
+            content = detail.summary_md || content
+            nextImageUrl = detail.image_url || nextImageUrl
+            if (active) {
+              const count = detail.view_count || 0
+              setViewCount(count)
+              setImageUrl(nextImageUrl)
+              onViewCountUpdate?.(articleId, count)
+            }
           } catch {
-            // fallback to local content
+            // The list payload is still enough to open the original article.
           }
         }
-        if (content) {
-          try {
-            const result = await marked.parse(content)
-            setHtmlContent(DOMPurify.sanitize(String(result)))
-          } catch {
-            setHtmlContent('<p>Failed to parse content</p>')
-          }
-        } else {
-          setHtmlContent('<p>No content available</p>')
+
+        if (!active) return
+        if (!content) {
+          setHtmlContent('<p>该订阅源没有提供正文摘要，可点击下方按钮阅读原文。</p>')
+          return
         }
-      } catch (err) {
-        setHtmlContent('<p>Failed to load article</p>')
+
+        const parsed = await marked.parse(content)
+        const sanitized = DOMPurify.sanitize(String(parsed))
+        if (active) setHtmlContent(removeRepeatedArticleTitle(sanitized, articleTitle))
+      } catch {
+        if (active) setHtmlContent('<p>正文解析失败，请前往原文阅读。</p>')
       } finally {
-        setLoading(false)
+        if (active) setLoading(false)
       }
     }
+
     loadContent()
-  }, [article?.id, article?.rss_id, article?.summary_md, rssIdProp])
+    return () => { active = false }
+  }, [article?.id, rssIdProp])
 
   if (!article) return null
 
-  function formatDate(dateString: string) {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) return ''
-    return date.toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  }
-
-  function scrollToTop() {
-    contentRef.current?.scrollTo({ top: 0, behavior: 'auto' })
-  }
-
   return (
-    <div className="article-drawer-modal" onClick={onClose}>
-      <div ref={contentRef} style={{ maxHeight: '100vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-        <>
-          <div
-            style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.85rem',
-              marginBottom: '16px',
-              display: 'flex',
-              gap: '12px',
-              flexWrap: 'wrap',
-            }}
-          >
-            <span>{formatDate(article.published_at)}</span>
-            {article.author && (
-              <span>{article.author}</span>
-            )}
-            <span>|</span>
-            <span>{viewCount} views</span>
+    <div className="article-drawer-backdrop" onMouseDown={onClose}>
+      <div
+        ref={panelRef}
+        className="article-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="article-drawer-title"
+        onMouseDown={event => event.stopPropagation()}
+      >
+        <header className="drawer-header">
+          <span className="drawer-kicker">READING VIEW</span>
+          <button type="button" className="icon-button" onClick={onClose} aria-label="关闭文章" title="关闭">
+            <X size={21} />
+          </button>
+        </header>
+
+        <article className="drawer-article">
+          <h1 id="article-drawer-title">{article.title}</h1>
+          <div className="drawer-meta">
+            <span><Clock3 size={15} />{formatArticleDate(article.published_at)}</span>
+            {article.author && <span><UserRound size={15} />{article.author}</span>}
+            <span><Eye size={15} />{viewCount.toLocaleString()} 次阅读</span>
           </div>
 
-          {imageUrl && (
-            <img
-              src={imageUrl}
-              alt=""
-              style={{
-                width: '100%',
-                maxHeight: '300px',
-                objectFit: 'cover',
-                borderRadius: '8px',
-                marginBottom: '16px',
-              }}
-            />
+          {imageUrl && !imageFailed && (
+            <img className="drawer-cover" src={imageUrl} alt="" onError={() => setImageFailed(true)} />
           )}
 
-          {loading && <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>loading...</div>}
-
-          {!loading && htmlContent && (
-            <div
-              className="article-content"
-              style={{
-                color: 'var(--text-primary)',
-                lineHeight: 1.6,
-              }}
-              dangerouslySetInnerHTML={{
-                __html: htmlContent,
-              }}
-            />
+          {loading ? (
+            <div className="drawer-loading"><LoaderCircle size={22} className="is-spinning" />正在加载正文</div>
+          ) : (
+            <div className="article-content" dangerouslySetInnerHTML={{ __html: htmlContent }} />
           )}
-          <div style={{ marginTop: '24px', display: 'flex', gap: '8px' }}>
-            <button
-              onClick={onClose}
-              style={{
-                flex: 1,
-                padding: '10px',
-                background: 'var(--text-primary)',
-                color: 'var(--bg-primary)',
-                border: '1px solid var(--border-color)',
-                cursor: 'pointer',
-              }}
-            >
-              × close
-            </button>
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                padding: '10px 16px',
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                textAlign: 'center',
-                textDecoration: 'none',
-                border: '1px solid var(--border-color)',
-              }}
-            >
-              → read original
-            </a>
-            <button
-              onClick={scrollToTop}
-              style={{
-                padding: '10px 16px',
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-color)',
-                cursor: 'pointer',
-              }}
-            >
-              ↑ top
-            </button>
-          </div>
-        </>
+        </article>
+
+        <footer className="drawer-footer">
+          <button type="button" className="secondary-button" onClick={() => panelRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <ArrowUp size={17} /> 返回顶部
+          </button>
+          <a className="primary-button" href={article.link} target="_blank" rel="noopener noreferrer">
+            阅读原文 <ExternalLink size={17} />
+          </a>
+        </footer>
       </div>
     </div>
   )

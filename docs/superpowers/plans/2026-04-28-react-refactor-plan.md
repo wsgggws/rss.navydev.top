@@ -1,5 +1,7 @@
 # React 重构实现计划
 
+> **归档说明：** 本计划已完成并停止维护，其中的 Vue 迁移步骤、UI 组件库和视觉描述仅用于历史追溯。当前实现请以仓库根目录的 [README](../../../README.md) 为准。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 将 RSS 阅读器从 Vue 3 重构为 React 18 + Vite + animal-island-ui，采用暗色系赛博朋克风格

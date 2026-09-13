@@ -61,4 +61,17 @@ export default [
       }
     },
   } as MockMethod,
+  {
+    url: '/api/v1/rss/subscriptions/:rssId/articles/:articleId',
+    method: 'get',
+    response: (options: { params?: { articleId?: string } }) => {
+      const article = articles.find(item => item.id === options.params?.articleId) || articles[0]
+      return { ...article, view_count: 128 }
+    },
+  } as MockMethod,
+  {
+    url: '/api/v1/visit/track',
+    method: 'post',
+    response: () => ({ total_visits: 12842 }),
+  } as MockMethod,
 ] as MockMethod[]

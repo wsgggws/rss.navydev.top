@@ -16,13 +16,13 @@ export interface SubscriptionListResponse {
 export interface ArticleItem {
   id: string
   link: string
-  published_at: string
+  published_at?: string | null
   summary_md?: string
   title: string
   author?: string
   rss_id?: string
   view_count?: number
-  image_url?: string
+  image_url?: string | null
 }
 
 export interface ArticleListResponse {
