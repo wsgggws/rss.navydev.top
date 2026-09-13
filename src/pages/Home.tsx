@@ -1,109 +1,109 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { ArticleItem, getAllSubscriptions, SubscriptionItem, trackVisit } from '../api/subscription'
+import ArticleDrawer from '../components/ArticleDrawer'
+import ArticleList from '../components/ArticleList'
+import HistoryPanel from '../components/HistoryPanel'
 import Layout from '../components/Layout'
 import Sidebar from '../components/Sidebar'
-import ArticleList from '../components/ArticleList'
-import ArticleDrawer from '../components/ArticleDrawer'
-import HistoryPanel from '../components/HistoryPanel'
 import { useDarkMode } from '../hooks/useDarkMode'
-import { ArticleItem, getAllSubscriptions, trackVisit } from '../api/subscription'
 
 type VisitCounts = Record<string, number>
-
-function loadVisitCounts(): VisitCounts {
-  try {
-    const stored = localStorage.getItem('visitCounts')
-    return stored ? JSON.parse(stored) : {}
-  } catch { return {} }
-}
-
 type ReadIdsMap = Record<string, string[]>
 
-function loadReadIds(): ReadIdsMap {
+function loadLocalValue<T>(key: string, fallback: T): T {
   try {
-    const stored = localStorage.getItem('readIds')
-    return stored ? JSON.parse(stored) : {}
-  } catch { return {} }
+    const stored = localStorage.getItem(key)
+    return stored ? JSON.parse(stored) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function persistLocalValue(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // Reading still works when storage is unavailable (for example, in private mode).
+  }
 }
 
 function Home() {
   const { isDark, toggleTheme } = useDarkMode()
-  const [selectedRssId, setSelectedRssId] = useState<string>('')
+  const [selectedRssId, setSelectedRssId] = useState('')
   const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [subscriptions, setSubscriptions] = useState<any[]>([])
+  const [sidebarOpen, setSidebarOpen] = useState(() => !window.matchMedia('(max-width: 768px)').matches)
+  const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([])
+  const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
+  const [subscriptionsError, setSubscriptionsError] = useState('')
   const [showHistory, setShowHistory] = useState(false)
-  const [historyArticles, setHistoryArticles] = useState<ArticleItem[]>(() => {
-    try {
-      const stored = localStorage.getItem('historyArticles')
-      return stored ? JSON.parse(stored) : []
-    } catch { return [] }
-  })
-  const [readIdsMap, setReadIdsMap] = useState<ReadIdsMap>(loadReadIds)
-  const [visitCounts, setVisitCounts] = useState<VisitCounts>(loadVisitCounts)
-  const [totalVisits, setTotalVisits] = useState<number>(0)
+  const [historyArticles, setHistoryArticles] = useState<ArticleItem[]>(() => loadLocalValue('historyArticles', []))
+  const [readIdsMap, setReadIdsMap] = useState<ReadIdsMap>(() => loadLocalValue('readIds', {}))
+  const [visitCounts, setVisitCounts] = useState<VisitCounts>(() => loadLocalValue('visitCounts', {}))
+  const [totalVisits, setTotalVisits] = useState(0)
+
+  const selectedSubscription = useMemo(
+    () => subscriptions.find(subscription => subscription.id === selectedRssId),
+    [selectedRssId, subscriptions],
+  )
 
   useEffect(() => {
-    trackVisit().then(res => setTotalVisits(res.total_visits)).catch(() => {})
+    trackVisit().then(response => setTotalVisits(response.total_visits)).catch(() => undefined)
   }, [])
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('visitCounts', JSON.stringify(visitCounts))
-    } catch {}
-  }, [visitCounts])
+  useEffect(() => persistLocalValue('visitCounts', visitCounts), [visitCounts])
+  useEffect(() => persistLocalValue('readIds', readIdsMap), [readIdsMap])
+  useEffect(() => persistLocalValue('historyArticles', historyArticles), [historyArticles])
 
   useEffect(() => {
-    try {
-      localStorage.setItem('readIds', JSON.stringify(readIdsMap))
-    } catch {}
-  }, [readIdsMap])
+    let active = true
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('historyArticles', JSON.stringify(historyArticles))
-    } catch {}
-  }, [historyArticles])
-
-  useEffect(() => {
-    setSidebarOpen(true)
-  }, [])
-
-  useEffect(() => {
-    fetchSubscriptions()
-  }, [])
-
-  async function fetchSubscriptions() {
-    try {
-      const data = await getAllSubscriptions({ page: 1, pageSize: 50 })
-      setSubscriptions(data.items)
-      if (data.items.length > 0 && !selectedRssId) {
-        setSelectedRssId(data.items[0].id)
+    async function fetchSubscriptions() {
+      setSubscriptionsLoading(true)
+      setSubscriptionsError('')
+      try {
+        const data = await getAllSubscriptions({ page: 1, pageSize: 100 })
+        if (!active) return
+        setSubscriptions(data.items)
+        setSelectedRssId(current => current || data.items[0]?.id || '')
+      } catch (error) {
+        if (active) setSubscriptionsError(error instanceof Error ? error.message : '订阅源加载失败')
+      } finally {
+        if (active) setSubscriptionsLoading(false)
       }
-    } catch (err) {
-      console.error('Failed to fetch subscriptions:', err)
     }
+
+    fetchSubscriptions()
+    return () => { active = false }
+  }, [])
+
+  function openArticle(article: ArticleItem, rssId = selectedRssId) {
+    const optimisticViewCount = (visitCounts[article.id] || article.view_count || 0) + 1
+    const enrichedArticle = {
+      ...article,
+      rss_id: article.rss_id || rssId,
+      view_count: optimisticViewCount,
+    }
+    setVisitCounts(current => ({ ...current, [article.id]: optimisticViewCount }))
+    setHistoryArticles(current => [enrichedArticle, ...current.filter(item => item.id !== article.id)].slice(0, 100))
+    setSelectedArticle(enrichedArticle)
   }
 
-  const handleArticleRead = (article: ArticleItem) => {
-    setHistoryArticles(prev => {
-      if (prev.some(a => a.id === article.id)) return prev
-      return [{ ...article, rss_id: article.rss_id || selectedRssId }, ...prev]
+  function markArticleRead(articleId: string) {
+    setReadIdsMap(current => {
+      const readIds = current[selectedRssId] || []
+      if (readIds.includes(articleId)) return current
+      return { ...current, [selectedRssId]: [...readIds, articleId] }
     })
   }
 
-  const handleMarkRead = (articleId: string) => {
-    setReadIdsMap(prev => {
-      const current = prev[selectedRssId] || []
-      if (current.includes(articleId)) return prev
-      return { ...prev, [selectedRssId]: [...current, articleId] }
-    })
+  function selectSubscription(id: string) {
+    setSelectedRssId(id)
+    setShowHistory(false)
+    if (window.matchMedia('(max-width: 768px)').matches) setSidebarOpen(false)
   }
 
-  const handleVisit = (articleId: string) => {
-    setVisitCounts(prev => ({
-      ...prev,
-      [articleId]: (prev[articleId] || 0) + 1,
-    }))
+  function clearHistory() {
+    if (window.confirm('确定清空当前浏览器中的全部阅读记录吗？')) setHistoryArticles([])
   }
 
   return (
@@ -111,61 +111,54 @@ function Home() {
       isDark={isDark}
       onThemeToggle={toggleTheme}
       sidebarOpen={sidebarOpen}
-      onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
-      onHistoryToggle={() => setShowHistory(!showHistory)}
+      onSidebarToggle={() => setSidebarOpen(open => !open)}
+      onHistoryToggle={() => setShowHistory(current => !current)}
       showHistory={showHistory}
       historyCount={historyArticles.length}
       totalVisits={totalVisits}
     >
       <Sidebar
         selectedId={selectedRssId}
-        onSelect={(id) => {
-          setSelectedRssId(id)
-          setShowHistory(false)
-        }}
+        onSelect={selectSubscription}
         subscriptions={subscriptions}
         isOpen={sidebarOpen}
         isMobileOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        loading={subscriptionsLoading}
+        error={subscriptionsError}
       />
-      {sidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-      <div style={{ flex: 1, padding: '16px', overflowY: 'auto' }}>
+
+      {sidebarOpen && <button type="button" className="sidebar-overlay" onClick={() => setSidebarOpen(false)} aria-label="关闭订阅栏" />}
+
+      <div className="content-workspace">
         {showHistory ? (
           <HistoryPanel
             articles={historyArticles}
             onClose={() => setShowHistory(false)}
-            onArticleClick={(article) => {
-              handleVisit(article.id)
-              setSelectedArticle(article)
-            }}
+            onClear={clearHistory}
+            onArticleClick={article => openArticle(article, article.rss_id)}
             visitCounts={visitCounts}
           />
         ) : (
           <ArticleList
             rssId={selectedRssId}
-            onArticleClick={(article) => {
-              handleVisit(article.id)
-              handleMarkRead(article.id)
-              handleArticleRead(article)
-              setSelectedArticle(article)
+            feedTitle={selectedSubscription?.title}
+            onArticleClick={article => {
+              markArticleRead(article.id)
+              openArticle(article)
             }}
             readIds={readIdsMap[selectedRssId] || []}
             visitCounts={visitCounts}
           />
         )}
       </div>
+
       {selectedArticle && (
         <ArticleDrawer
           article={selectedArticle}
-          rssId={selectedRssId}
+          rssId={selectedArticle.rss_id || selectedRssId}
           onClose={() => setSelectedArticle(null)}
-          onViewCountUpdate={(articleId, count) => {
-            setVisitCounts(prev => ({ ...prev, [articleId]: count }))
-          }}
+          onViewCountUpdate={(articleId, count) => setVisitCounts(current => ({ ...current, [articleId]: count }))}
         />
       )}
     </Layout>

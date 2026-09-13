@@ -1,4 +1,7 @@
+import { ArrowUpRight, Clock3, Eye, FileText, UserRound } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { ArticleItem } from '../api/subscription'
+import { formatArticleDate } from '../utils/date'
 
 interface ArticleCardProps {
   article: ArticleItem
@@ -7,112 +10,51 @@ interface ArticleCardProps {
   visitCount?: number
 }
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+function cleanSummary(value?: string) {
+  return value
+    ?.replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/[#*`>\[\]]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
-function ArticleCard({ article, onClick, isRead, visitCount }: ArticleCardProps) {
+function ArticleCard({ article, onClick, isRead = false, visitCount = 0 }: ArticleCardProps) {
+  const [imageFailed, setImageFailed] = useState(false)
+  const summary = cleanSummary(article.summary_md)
+
+  useEffect(() => setImageFailed(false), [article.image_url])
+
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className="article-card"
-      style={{
-        display: 'flex',
-        gap: '16px',
-        padding: '16px',
-        marginBottom: '8px',
-        background: 'var(--bg-card)',
-        cursor: 'pointer',
-        border: '1px solid var(--border-color)',
-      }}
+      className={`article-card ${isRead ? 'is-read' : 'is-unread'}`}
+      aria-label={`阅读：${article.title}`}
     >
-      <div
-        className="article-card-image"
-        style={{
-          width: '80px',
-          height: '60px',
-          background: 'var(--bg-secondary)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-secondary)',
-          fontSize: '1.5rem',
-          flexShrink: 0,
-          overflow: 'hidden',
-          borderRadius: '4px',
-        }}
-      >
-        {article.image_url ? (
-          <img
-            src={article.image_url}
-            alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        ) : isRead ? (
-          '\u{1F4D6}'
+      <span className="article-card-body">
+        <span className="article-title-row">
+          {!isRead && <span className="unread-indicator" aria-label="未读" />}
+          <span className="article-card-title">{article.title}</span>
+        </span>
+
+        {summary && <span className="article-summary">{summary}</span>}
+
+        <span className="article-meta">
+          <span><Clock3 size={14} />{formatArticleDate(article.published_at, { relative: true })}</span>
+          {article.author && <span><UserRound size={14} />{article.author}</span>}
+          {visitCount > 0 && <span><Eye size={14} />{visitCount.toLocaleString()} 次阅读</span>}
+          <span className="read-more">阅读全文 <ArrowUpRight size={14} /></span>
+        </span>
+      </span>
+
+      <span className="article-thumbnail" aria-hidden="true">
+        {article.image_url && !imageFailed ? (
+          <img src={article.image_url} alt="" loading="lazy" onError={() => setImageFailed(true)} />
         ) : (
-          '\u{1F4D5}'
+          <FileText size={24} />
         )}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <h3
-          style={{
-            color: 'var(--text-primary)',
-            marginBottom: '6px',
-            fontSize: '1rem',
-            fontWeight: 600,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {article.title}
-        </h3>
-        {article.summary_md && (
-          <p
-            style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.85rem',
-              marginBottom: '6px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              lineHeight: 1.5,
-            }}
-          >
-            {article.summary_md.replace(/[#*`\[\]]/g, '').slice(0, 100)}
-          </p>
-        )}
-        <div
-          style={{
-            color: 'var(--text-secondary)',
-            fontSize: '0.75rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          <span>{formatDate(article.published_at)}</span>
-          {article.author && (
-            <>
-              <span>|</span>
-              <span>{article.author}</span>
-            </>
-          )}
-          {visitCount !== undefined && visitCount > 0 && (
-            <>
-              <span>|</span>
-              <span>{visitCount} views</span>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+      </span>
+    </button>
   )
 }
 

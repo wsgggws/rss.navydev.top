@@ -1,5 +1,6 @@
+import { History, Menu, Moon, PanelLeftClose, Rss, Sun } from 'lucide-react'
+
 interface HeaderProps {
-  title: string
   onThemeToggle?: () => void
   isDark?: boolean
   onMenuToggle?: () => void
@@ -10,116 +11,68 @@ interface HeaderProps {
   totalVisits?: number
 }
 
-function Header({ title, onThemeToggle, isDark, onMenuToggle, sidebarOpen, onHistoryToggle, showHistory, historyCount, totalVisits }: HeaderProps) {
+function Header({
+  onThemeToggle,
+  isDark,
+  onMenuToggle,
+  sidebarOpen,
+  onHistoryToggle,
+  showHistory,
+  historyCount = 0,
+  totalVisits = 0,
+}: HeaderProps) {
   return (
-    <header
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '12px 16px',
-        background: 'var(--bg-secondary)',
-        borderBottom: '1px solid var(--border-color)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <header className="app-header">
+      <div className="header-brand-group">
         {onMenuToggle && (
           <button
+            type="button"
+            className="icon-button menu-button"
             onClick={onMenuToggle}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '1.2rem',
-              padding: '4px',
-              color: 'var(--text-primary)',
-            }}
-            aria-label="Toggle menu"
+            aria-label={sidebarOpen ? '收起订阅栏' : '展开订阅栏'}
+            title={sidebarOpen ? '收起订阅栏' : '展开订阅栏'}
           >
-            {sidebarOpen ? '[x]' : '[=]'}
+            {sidebarOpen ? <PanelLeftClose size={20} /> : <Menu size={20} />}
           </button>
         )}
-        <h1
-          style={{
-            color: 'var(--text-primary)',
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-          }}
-        >
-          {title}
-        </h1>
+        <div className="brand-mark" aria-hidden="true">
+          <Rss size={19} />
+        </div>
+        <div className="brand-copy">
+          <strong>RSS NAVY</strong>
+          <span>专注阅读，远离噪音</span>
+        </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        {totalVisits !== undefined && totalVisits > 0 && (
-          <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
-            {totalVisits.toLocaleString()} visits
+
+      <div className="header-actions">
+        {totalVisits > 0 && (
+          <span className="visit-stat" title="本站累计访问次数">
+            <strong>{totalVisits.toLocaleString()}</strong>
+            <span>次访问</span>
           </span>
         )}
         {onHistoryToggle && (
           <button
+            type="button"
+            className={`header-action-button ${showHistory ? 'is-active' : ''}`}
             onClick={onHistoryToggle}
-            style={{
-              background: showHistory ? 'var(--text-primary)' : 'transparent',
-              color: showHistory ? 'var(--bg-primary)' : 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
-              cursor: 'pointer',
-              padding: '6px 12px',
-              fontSize: '0.85rem',
-            }}
+            aria-pressed={showHistory}
           >
-            history {historyCount !== undefined && historyCount > 0 ? `(${historyCount})` : ''}
+            <History size={18} />
+            <span className="action-label">阅读记录</span>
+            {historyCount > 0 && <span className="count-badge">{historyCount}</span>}
           </button>
         )}
         {onThemeToggle && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
+          <button
+            type="button"
+            className="icon-button"
+            onClick={onThemeToggle}
+            aria-label={isDark ? '切换到浅色模式' : '切换到深色模式'}
+            title={isDark ? '切换到浅色模式' : '切换到深色模式'}
           >
-            <span
-              style={{
-                color: 'var(--text-secondary)',
-                fontSize: '0.85rem',
-              }}
-            >
-              {isDark ? 'dark' : 'light'}
-            </span>
-            <label style={{ position: 'relative', display: 'inline-block', width: '40px', height: '20px', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={isDark}
-                onChange={onThemeToggle}
-                style={{ opacity: 0, width: 0, height: 0 }}
-              />
-              <span
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: isDark ? 'var(--text-primary)' : 'var(--border-color)',
-                  borderRadius: '10px',
-                  transition: 'background 0.2s',
-                }}
-              >
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '2px',
-                    left: isDark ? '22px' : '2px',
-                    width: '16px',
-                    height: '16px',
-                    background: isDark ? 'var(--bg-card)' : 'var(--text-secondary)',
-                    borderRadius: '50%',
-                    transition: 'left 0.2s',
-                  }}
-                />
-              </span>
-            </label>
-          </div>
+            {isDark ? <Sun size={19} /> : <Moon size={19} />}
+          </button>
         )}
       </div>
     </header>

@@ -6,15 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
-    "axios": "^1.7.4",
-    "dompurify": "^3.4.1",
-    "marked": "^18.0.2",
+    "axios": "^1.20.0",
+    "dompurify": "^3.4.15",
+    "lucide-react": "^1.45.0",
+    "marked": "^18.0.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.0"
+    "react-router-dom": "^6.30.6"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
@@ -25,6 +27,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",
-    "vite-plugin-mock": "^3.0.2"
+    "vite-plugin-mock": "^3.0.2",
+    "vitest": "^5.0.0"
   }
 }

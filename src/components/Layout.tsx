@@ -13,35 +13,20 @@ interface LayoutProps {
   totalVisits?: number
 }
 
-function Layout({ children, isDark, onThemeToggle, sidebarOpen, onSidebarToggle, onHistoryToggle, showHistory, historyCount, totalVisits }: LayoutProps) {
+function Layout(props: LayoutProps) {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--bg-primary)',
-        color: 'var(--text-primary)',
-        transition: 'background 0.3s ease, color 0.3s ease',
-      }}
-    >
+    <div className="app-shell">
       <Header
-        title="RSS Reader"
-        isDark={isDark}
-        onThemeToggle={onThemeToggle}
-        onMenuToggle={onSidebarToggle}
-        sidebarOpen={sidebarOpen}
-        onHistoryToggle={onHistoryToggle}
-        showHistory={showHistory}
-        historyCount={historyCount}
-        totalVisits={totalVisits}
+        isDark={props.isDark}
+        onThemeToggle={props.onThemeToggle}
+        onMenuToggle={props.onSidebarToggle}
+        sidebarOpen={props.sidebarOpen}
+        onHistoryToggle={props.onHistoryToggle}
+        showHistory={props.showHistory}
+        historyCount={props.historyCount}
+        totalVisits={props.totalVisits}
       />
-      <main
-        style={{
-          display: 'flex',
-          minHeight: 'calc(100vh - 65px)',
-        }}
-      >
-        {children}
-      </main>
+      <main className="app-main">{props.children}</main>
     </div>
   )
 }
